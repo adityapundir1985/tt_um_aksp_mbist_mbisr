@@ -1,0 +1,48 @@
+name: GDS Generation
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install gdstk
+          
+      - name: Create dummy GDS for testing
+        run: |
+          python -c "
+          import gdstk
+          
+          # Create a new library
+          lib = gdstk.Library()
+          
+          # Create a simple cell with a rectangle
+          cell = gdstk.Cell('TOP')
+          rect = gdstk.rectangle((0, 0), (100, 100), layer=0, datatype=0)
+          cell.add(rect)
+          
+          # Add to library
+          lib.add(cell)
+          
+          # Save as GDS
+          lib.write_gds('output.gds')
+          print('Generated dummy GDS file')
+          "
+          
+      - name: Upload GDS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tt_submission
+          path: output.gds
