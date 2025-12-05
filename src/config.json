@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "pdk": "ihp-sg13g2",
+  "top_module": "tt_um_aksp_mbist_mbisr",
+  "clock_hz": 10000000,
+  "tiles": "1x1",
+  "power": {
+    "vccd": 3.3,
+    "vssd": 0
+  }
+}
