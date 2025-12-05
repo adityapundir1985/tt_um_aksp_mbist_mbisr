@@ -60,19 +60,4 @@ module memory #(
         end
     end
     
-    // Alternative: Synchronous read (better for FPGA)
-    /*
-    always @(posedge clk) begin
-        if (rst) begin
-            mem_rdata <= {DATA_WIDTH{1'b0}};
-        end else if (mem_en && !mem_we) begin
-            if (mem_addr < MEM_SIZE) begin
-                mem_rdata <= mem_array[mem_addr];
-            end else begin
-                mem_rdata <= {DATA_WIDTH{1'b0}};
-            end
-        end
-    end
-    */
-    
 endmodule
