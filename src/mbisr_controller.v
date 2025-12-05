@@ -40,12 +40,13 @@ module mbisr_controller #(
                 repair_table[i] <= {ADDR_WIDTH{1'b1}};
                 repair_valid[i] <= 1'b0;
             end
+            inserted <= 1'b0;
         end else begin
             if (bist_fail_valid) begin
-                inserted = 1'b0;
+                inserted <= 1'b0;
                 for (j=0;j<MAX_REPAIRS;j=j+1) begin
                     if (repair_valid[j] && repair_table[j] == bist_fail_addr) begin
-                        inserted = 1'b1;
+                        inserted <= 1'b1;
                     end
                 end
                 if (!inserted) begin
@@ -53,7 +54,7 @@ module mbisr_controller #(
                         if (!repair_valid[j] && !inserted) begin
                             repair_table[j] <= bist_fail_addr;
                             repair_valid[j] <= 1'b1;
-                            inserted = 1'b1;
+                            inserted <= 1'b1;
                         end
                     end
                 end
