@@ -6,15 +6,17 @@
   - uo_out[1] -> fail
   - rst = ~rst_n
   - ena is not used by user's top but accepted by interface
-  - uio left as high-Z
+  - uio left as inputs (high-Z)
 */
 module tt_um_aksp_mbist_mbisr (
-    input  wire        clk,
-    input  wire        rst_n,
-    input  wire        ena,
-    input  wire [7:0]  ui_in,
-    output wire [7:0]  uo_out,
-    inout  wire [7:0]  uio
+    input  wire [7:0] ui_in,    // Dedicated inputs
+    output wire [7:0] uo_out,   // Dedicated outputs
+    input  wire [7:0] uio_in,   // IOs: Input path
+    output wire [7:0] uio_out,  // IOs: Output path
+    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
+    input  wire       ena,
+    input  wire       clk,
+    input  wire       rst_n
 );
 
     // translate reset and start
@@ -38,12 +40,8 @@ module tt_um_aksp_mbist_mbisr (
     assign uo_out[1] = fail;
     assign uo_out[7:2] = 6'b0;
 
-    // leave uio as high-Z
-    genvar i;
-    generate
-        for (i = 0; i < 8; i = i + 1) begin : UIO_Z
-            assign uio[i] = 1'bz;
-        end
-    endgenerate
+    // leave uio as inputs (high-Z)
+    assign uio_out = 8'b0;
+    assign uio_oe = 8'b0;  // All uio pins as inputs (0=input mode)
 
 endmodule
