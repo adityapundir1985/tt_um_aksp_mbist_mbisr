@@ -1,42 +1,10 @@
-name: Simulation
+name: sim
 on: [push, pull_request]
-
 jobs:
-  simulate:
-    runs-on: ubuntu-latest
+  sim:
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Icarus Verilog
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y iverilog gtkwave
-
-      - name: Compile Verilog files
-        run: |
-          cd test
-          echo "Compiling Verilog files..."
-          iverilog -o sim.out -I../src \
-            ../src/tt_um_aksp_mbist_mbisr.v \
-            ../src/top.v \
-            ../src/mbist_marchc_controller.v \
-            ../src/mbisr_controller.v \
-            ../src/memory.v \
-            tt_um_aksp_mbist_mbisr_tb.v
-          echo "Compilation successful"
-
-      - name: Run simulation
-        run: |
-          cd test
-          echo "Running simulation..."
-          vvp sim.out
-          echo "Simulation complete"
-
-      - name: Upload waveform artifact
-        uses: actions/upload-artifact@v4
-        if: always()
+      - uses: actions/checkout@v4
+      - uses: TinyTapeout/tt-sim-action@ttihp26a
         with:
-          name: waveform
-          path: test/wave.vcd
-          retention-days: 7
+          top_module: "tt_um_aksp_mbist_mbisr_tb"
