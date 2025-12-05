@@ -2,7 +2,6 @@ name: gds
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -18,12 +17,13 @@ jobs:
         uses: TinyTapeout/tt-gds-action@ttihp26a
         with:
           pdk: ihp-sg13g2
+          librelane-version: 3.0.0.dev44  # Updated version
 
   precheck:
     needs: gds
     runs-on: ubuntu-24.04
     steps:
-      - name: Run TinyTapeout Precheck
+      - name: Run Tiny Tapeout Precheck
         uses: TinyTapeout/tt-gds-action/precheck@ttihp26a
 
   gl_test:
