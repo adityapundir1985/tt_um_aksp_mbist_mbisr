@@ -10,18 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate commit_id.json
+      - name: Create directory structure
         run: |
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
-
-      - name: Generate placeholder GDS
-        run: |
-          echo "GDS placeholder for TinyTapeout" > output.gds
-
-      - name: Create tt_submission artifact
+          mkdir -p tt_submission_dir
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission_dir/commit_id.json
+          echo "GDS placeholder" > tt_submission_dir/output.gds
+          
+          # Create zip
+          zip -r tt_submission.zip tt_submission_dir/
+          
+      - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: |
-            commit_id.json
-            output.gds
+          path: tt_submission.zip
