@@ -10,17 +10,14 @@ project:
   top_module: "tt_um_aksp_mbist_mbisr"
   documentation: "README.md"
   tiles: "1x1"
-  clock_hz: 10000000  # 10 MHz 
+  clock_hz: 10000000
   
-  # source_files MUST be inside project section
   source_files:
-    - tt_um_aksp_mbist_mbisr.v
-    - top.v
-    - mbist_marchc_controller.v
-    - mbisr_controller.v
-    - memory.v
-    # Remove testbench from source_files - it's only for simulation
-    # - tt_um_aksp_mbist_mbisr_tb.v
+    - src/tt_um_aksp_mbist_mbisr.v
+    - src/top.v
+    - src/mbist_marchc_controller.v
+    - src/mbisr_controller.v
+    - src/memory.v
 
 pinout:
   ui[0]: { name: start, dir: input }
@@ -49,6 +46,11 @@ pinout:
   uio[5]: { name: uio5, dir: inout }
   uio[6]: { name: uio6, dir: inout }
   uio[7]: { name: uio7, dir: inout }
+
+# Add power pins to pinout
+power_pins:
+  vccd1: { name: vccd1, dir: input, desc: "Primary power" }
+  vssd1: { name: vssd1, dir: input, desc: "Primary ground" }
 
 power:
   vccd: 3.3
