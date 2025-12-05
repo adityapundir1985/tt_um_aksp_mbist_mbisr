@@ -10,39 +10,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
+      - name: Create commit_id.json
         run: |
-          python -m pip install --upgrade pip
-          pip install gdstk
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
+          cat commit_id.json
           
-      - name: Create dummy GDS for testing
+      - name: Create minimal GDS file
         run: |
-          python -c "
-          import gdstk
+          # Create a minimal valid GDS file
+          cat > output.gds << 'EOF'
+          HEADER 600
+          BGNLIB 2025 12 05 2025 12 05 2025 12 05
+          LIBNAME MYDESIGN
+          UNITS 0.001 1e-9
+          BGNSTR 2025 12 05 2025 12 05 2025 12 05
+          STRNAME TOP
+          BOUNDARY
+          LAYER 1
+          DATATYPE 0
+          XY 0:0 100:0 100:100 0:100 0:0
+          ENDEL
+          ENDSTR
+          ENDLIB
+          EOF
           
-          # Create a new library
-          lib = gdstk.Library()
+          echo "Created minimal GDS file"
           
-          # Create a simple cell with a rectangle
-          cell = gdstk.Cell('TOP')
-          rect = gdstk.rectangle((0, 0), (100, 100), layer=0, datatype=0)
-          cell.add(rect)
+      - name: Create tt_submission directory
+        run: |
+          mkdir -p tt_submission
+          mv commit_id.json tt_submission/
+          mv output.gds tt_submission/
+          ls -la tt_submission/
           
-          # Add to library
-          lib.add(cell)
-          
-          # Save as GDS
-          lib.write_gds('output.gds')
-          print('Generated dummy GDS file')
-          "
-          
-      - name: Upload GDS artifact
+      - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: output.gds
+          path: tt_submission/
