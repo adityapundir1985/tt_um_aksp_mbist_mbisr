@@ -10,30 +10,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Create submission files
+      - name: Create minimal valid structure
         run: |
-          echo '{"commit_id": "${{ github.sha }}"}' > commit_id.json
+          # Create directory
+          mkdir -p tt_submission_files
           
-          cat > output.gds << 'EOF'
-          HEADER 600
-          BGNLIB 2025 12 05 2025 12 05 2025 12 05
-          LIBNAME TT_UM_AKSP_MBIST_MBISR
-          UNITS 0.001 1e-9
-          BGNSTR 2025 12 05 2025 12 05 2025 12 05
-          STRNAME TOP
-          BOUNDARY
-          LAYER 1
-          DATATYPE 0
-          XY 0:0 1000:0 1000:1000 0:1000 0:0
-          ENDEL
-          ENDSTR
-          ENDLIB
-          EOF
+          # Create commit_id.json at ROOT of what will be zipped
+          echo '{"commit_id": "${{ github.sha }}"}' > tt_submission_files/commit_id.json
           
-      - name: Upload files directly (not in directory)
+          # Create empty GDS
+          touch tt_submission_files/output.gds
+          
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: |
-            commit_id.json
-            output.gds
+          path: tt_submission_files/
