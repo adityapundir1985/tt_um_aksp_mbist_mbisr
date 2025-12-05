@@ -8,6 +8,8 @@
   - ena is not used by user's top but accepted by interface
   - uio left as inputs (high-Z)
 */
+
+/* verilator lint_off UNUSEDSIGNAL */
 module tt_um_aksp_mbist_mbisr (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
@@ -18,6 +20,7 @@ module tt_um_aksp_mbist_mbisr (
     input  wire       clk,
     input  wire       rst_n
 );
+/* verilator lint_on UNUSEDSIGNAL */
 
     // translate reset and start
     wire rst = ~rst_n;
