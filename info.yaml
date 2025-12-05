@@ -1,15 +1,15 @@
 yaml_version: 6
 
 project:
-  title: "AKSP MBIST + MBISR"
+  name: "tt_um_aksp_mbist_mbisr"
   author: "Aditya Kumar Singh Pundir"
   email: "aditya.pundir@gmail.com"
-  description: "MBIST (March C-) + MBISR (CAM remap) memory test and repair system for TinyTapeout IHP 26a."
+  title: "MBIST + MBISR Built-In Memory Test & Repair"
+  description: "Memory Built-In Self-Test (March C-) and Built-In Self-Repair with CAM-based faulty address remapping."
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
   documentation: "README.md"
-  clock_hz: 10000000
-  tiles: 1
+  tiles: "1x1"
 
 source_files:
   - src/tt_um_aksp_mbist_mbisr.v
@@ -19,35 +19,33 @@ source_files:
   - src/memory.v
 
 pinout:
-  ui:
-    - { name: start,     desc: "Start MBIST" }
-    - { name: in1,       desc: "Unused input 1" }
-    - { name: in2,       desc: "Unused input 2" }
-    - { name: in3,       desc: "Unused input 3" }
-    - { name: in4,       desc: "Unused input 4" }
-    - { name: in5,       desc: "Unused input 5" }
-    - { name: in6,       desc: "Unused input 6" }
-    - { name: in7,       desc: "Unused input 7" }
+  ui[0]: { name: start, dir: input }
+  ui[1]: { name: ui1, dir: input }
+  ui[2]: { name: ui2, dir: input }
+  ui[3]: { name: ui3, dir: input }
+  ui[4]: { name: ui4, dir: input }
+  ui[5]: { name: ui5, dir: input }
+  ui[6]: { name: ui6, dir: input }
+  ui[7]: { name: ui7, dir: input }
 
-  uo:
-    - { name: done,      desc: "Test complete" }
-    - { name: fail,      desc: "Test fail flag" }
-    - { name: out2,      desc: "Unused output 2" }
-    - { name: out3,      desc: "Unused output 3" }
-    - { name: out4,      desc: "Unused output 4" }
-    - { name: out5,      desc: "Unused output 5" }
-    - { name: out6,      desc: "Unused output 6" }
-    - { name: out7,      desc: "Unused output 7" }
+  uo[0]: { name: done, dir: output }
+  uo[1]: { name: fail, dir: output }
+  uo[2]: { name: uo2, dir: output }
+  uo[3]: { name: uo3, dir: output }
+  uo[4]: { name: uo4, dir: output }
+  uo[5]: { name: uo5, dir: output }
+  uo[6]: { name: uo6, dir: output }
+  uo[7]: { name: uo7, dir: output }
 
-  uio:
-    - { name: b0, desc: "Bidirectional 0" }
-    - { name: b1, desc: "Bidirectional 1" }
-    - { name: b2, desc: "Bidirectional 2" }
-    - { name: b3, desc: "Bidirectional 3" }
-    - { name: b4, desc: "Bidirectional 4" }
-    - { name: b5, desc: "Bidirectional 5" }
-    - { name: b6, desc: "Bidirectional 6" }
-    - { name: b7, desc: "Bidirectional 7" }
+  uio[0]: { name: uio0, dir: inout }
+  uio[1]: { name: uio1, dir: inout }
+  uio[2]: { name: uio2, dir: inout }
+  uio[3]: { name: uio3, dir: inout }
+  uio[4]: { name: uio4, dir: inout }
+  uio[5]: { name: uio5, dir: inout }
+  uio[6]: { name: uio6, dir: inout }
+  uio[7]: { name: uio7, dir: inout }
 
 power:
-  voltage: 3.3
+  vccd: 3.3
+  vssd: 0
