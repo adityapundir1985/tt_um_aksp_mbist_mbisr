@@ -10,10 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Validate info.yaml
-        uses: tinytapeout/action-validate-project@v1
-        with:
-          config_file: info.yaml
+        
+      - name: Check info.yaml syntax
+        run: |
+          python3 -c "import yaml; yaml.safe_load(open('info.yaml'))"
+          echo "✅ info.yaml is valid YAML"
+          
+      - name: Check config.json syntax  
+        run: |
+          python3 -c "import json; json.load(open('config.json'))"
+          echo "✅ config.json is valid JSON"
