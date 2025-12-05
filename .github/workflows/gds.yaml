@@ -12,15 +12,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create files
+      - name: Create double nested structure
         run: |
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
-          echo "GDS placeholder" > output.gds
+          # Create: tt_submission/tt_submission/commit_id.json
+          mkdir -p tt_submission/tt_submission
           
-      - name: Upload files directly
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission/tt_submission/commit_id.json
+          echo "GDS" > tt_submission/tt_submission/output.gds
+          
+          # Zip from outside
+          zip -r tt_submission.zip tt_submission/
+          
+          echo "Created structure:"
+          find . -name "*.json" -o -name "*.gds" -o -name "*.zip"
+          echo "Zip contents:"
+          unzip -l tt_submission.zip
+          
+      - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: |
-            commit_id.json
-            output.gds
+          path: tt_submission.zip
