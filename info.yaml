@@ -1,58 +1,44 @@
-yaml_version: 6
-
 project:
-  title: "AKSP MBIST + MBISR"
-  author: "Aditya Kumar Singh Pundir"
-  email: "aditya.pundir@gmail.com"
-  description: "MBIST (March C-) + MBISR (CAM repair) design for TinyTapeout IHP 26a."
-  language: "verilog"
-  top_module: "tt_um_aksp_mbist_mbisr"
+  title: "MBIST/MBISR"
+  author: "Your Name"
+  description: "Memory Built-In Self Test / Memory Built-In Self Repair"
 
-source_files:
-  - src/tt_um_aksp_mbist_mbisr.v
-  - src/top.v
-  - src/mbist_marchc_controller.v
-  - src/mbisr_controller.v
-  - src/memory.v
+digital:
+  source: "verilog"
+  top_module: "tt_um_aksp_mbist_mbisr"
+  language: "systemverilog"
 
 clock:
-  period: 10
-
-# REQUIRED FOR TT-IHP
-tiles:
-  - x: 0
-    y: 0
+  pin: ui0
+  frequency: 10000000
 
 pinout:
   ui:
-    0: { name: ui_in_0,  direction: input }
-    1: { name: ui_in_1,  direction: input }
-    2: { name: ui_in_2,  direction: input }
-    3: { name: ui_in_3,  direction: input }
-    4: { name: ui_in_4,  direction: input }
-    5: { name: ui_in_5,  direction: input }
-    6: { name: ui_in_6,  direction: input }
-    7: { name: ui_in_7,  direction: input }
-
+    - [ui0, "Clock", "IN"]
+    - [ui1, "Reset", "IN"]
+    - [ui2, "Test Enable", "IN"]
+    - [ui3, "BIST Start", "IN"]
+    - [ui4, "Input 4", "IN"]
+    - [ui5, "Input 5", "IN"]
+    - [ui6, "Input 6", "IN"]
+    - [ui7, "Input 7", "IN"]
+  
   uo:
-    0: { name: uo_out_0, direction: output }
-    1: { name: uo_out_1, direction: output }
-    2: { name: uo_out_2, direction: output }
-    3: { name: uo_out_3, direction: output }
-    4: { name: uo_out_4, direction: output }
-    5: { name: uo_out_5, direction: output }
-    6: { name: uo_out_6, direction: output }
-    7: { name: uo_out_7, direction: output }
-
+    - [uo0, "BIST Done", "OUT"]
+    - [uo1, "Pass/Fail", "OUT"]
+    - [uo2, "Error", "OUT"]
+    - [uo3, "Repair Complete", "OUT"]
+    - [uo4, "Status 0", "OUT"]
+    - [uo5, "Status 1", "OUT"]
+    - [uo6, "Status 2", "OUT"]
+    - [uo7, "Status 3", "OUT"]
+  
   uio:
-    0: { name: uio_0, direction: input }
-    1: { name: uio_1, direction: input }
-    2: { name: uio_2, direction: input }
-    3: { name: uio_3, direction: input }
-    4: { name: uio_4, direction: input }
-    5: { name: uio_5, direction: input }
-    6: { name: uio_6, direction: input }
-    7: { name: uio_7, direction: input }
-
-documentation:
-  homepage: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
+    - [uio0, "Bidirectional 0", "BIDIR"]
+    - [uio1, "Bidirectional 1", "BIDIR"]
+    - [uio2, "Bidirectional 2", "BIDIR"]
+    - [uio3, "Bidirectional 3", "BIDIR"]
+    - [uio4, "Bidirectional 4", "BIDIR"]
+    - [uio5, "Bidirectional 5", "BIDIR"]
+    - [uio6, "Bidirectional 6", "BIDIR"]
+    - [uio7, "Bidirectional 7", "BIDIR"]
