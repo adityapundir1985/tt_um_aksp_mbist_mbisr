@@ -1,10 +1,10 @@
 project:
-  title: "AKSP MBIST + MBISR"
+  title: "MBIST with MBISR"
   author: "Dr. Aditya Kumar Singh Pundir"
   description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair."
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
-  clock_hz: 10000000  # 10 MHz
+  clock_hz: 10000000
   source_files:
     - src/tt_um_aksp_mbist_mbisr.v
     - src/top.v
@@ -13,83 +13,33 @@ project:
     - src/memory.v
 
 pinout:
-  ui:  # User inputs
+  ui:
     - name: "start"
-      direction: "input"
-      description: "Start test pulse"
     - name: "ui_in_1"
-      direction: "input"
-      description: "Reserved"
     - name: "ui_in_2"
-      direction: "input"
-      description: "Reserved"
     - name: "ui_in_3"
-      direction: "input"
-      description: "Reserved"
     - name: "ui_in_4"
-      direction: "input"
-      description: "Reserved"
     - name: "ui_in_5"
-      direction: "input"
-      description: "Reserved"
     - name: "ui_in_6"
-      direction: "input"
-      description: "Reserved"
     - name: "ui_in_7"
-      direction: "input"
-      description: "Reserved"
-
-  uo:  # User outputs
+  uo:
     - name: "done"
-      direction: "output"
-      description: "Test complete"
     - name: "fail"
-      direction: "output"
-      description: "Test failure"
     - name: "uo_out_2"
-      direction: "output"
-      description: "Reserved"
     - name: "uo_out_3"
-      direction: "output"
-      description: "Reserved"
     - name: "uo_out_4"
-      direction: "output"
-      description: "Reserved"
     - name: "uo_out_5"
-      direction: "output"
-      description: "Reserved"
     - name: "uo_out_6"
-      direction: "output"
-      description: "Reserved"
     - name: "uo_out_7"
-      direction: "output"
-      description: "Reserved"
-
-  uio:  # Bidirectional
+  uio:
     - name: "uio_0"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_1"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_2"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_3"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_4"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_5"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_6"
-      direction: "inout"
-      description: "Unused"
     - name: "uio_7"
-      direction: "inout"
-      description: "Unused"
 
 tiles: 1x1
 
