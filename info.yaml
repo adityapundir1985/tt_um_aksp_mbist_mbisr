@@ -10,14 +10,17 @@ project:
   top_module: "tt_um_aksp_mbist_mbisr"
   documentation: "README.md"
   tiles: "1x1"
-
-source_files:
-  - tt_um_aksp_mbist_mbisr.v
-  - top.v
-  - mbist_marchc_controller.v
-  - mbisr_controller.v
-  - memory.v
-  - tt_um_aksp_mbist_mbisr_tb.v
+  clock_hz: 10000000  # 10 MHz - ADD THIS!
+  
+  # source_files MUST be inside project section
+  source_files:
+    - tt_um_aksp_mbist_mbisr.v
+    - top.v
+    - mbist_marchc_controller.v
+    - mbisr_controller.v
+    - memory.v
+    # Remove testbench from source_files - it's only for simulation
+    # - tt_um_aksp_mbist_mbisr_tb.v
 
 pinout:
   ui[0]: { name: start, dir: input }
