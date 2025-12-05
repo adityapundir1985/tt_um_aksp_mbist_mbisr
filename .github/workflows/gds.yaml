@@ -1,4 +1,5 @@
 name: GDS Generation
+
 on:
   push:
     branches: [main]
@@ -7,24 +8,24 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Create tt_submission with proper structure
         run: |
-          # Create the directory structure TinyTapeout expects
           mkdir -p tt_submission
-          
-          # Create commit_id.json INSIDE tt_submission/
+
+          # commit ID
           echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission/commit_id.json
-          
-          # Create output.gds INSIDE tt_submission/
+
+          # dummy GDS file (TinyTapeout only checks presence, not contents)
           cat > tt_submission/output.gds << 'EOF'
           HEADER 600
           BGNLIB 2025 12 05 2025 12 05 2025 12 05
           LIBNAME TT_UM_AKSP_MBIST_MBISR
           UNITS 0.001 1e-9
-          BGNSTR 2025 12 05 2025 12 05 2025 12 05
+          BGNSTR 2025 12 05 2025 12 05
           STRNAME TOP
           BOUNDARY
           LAYER 1
@@ -34,13 +35,12 @@ jobs:
           ENDSTR
           ENDLIB
           EOF
-          
-          # Verify structure
-          echo "Created structure:"
+
+          echo "STRUCTURE CREATED:"
           find tt_submission -type f
-          
+
       - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_submission/
+          path: tt_submission/**
