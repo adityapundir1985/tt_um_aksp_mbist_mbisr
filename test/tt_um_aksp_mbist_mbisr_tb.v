@@ -8,17 +8,21 @@ module tt_um_aksp_mbist_mbisr_tb;
     reg rst_n = 0;
     reg ena = 1;
     reg [7:0] ui_in = 8'h00;
+    reg [7:0] uio_in = 8'h00;
     wire [7:0] uo_out;
-    wire [7:0] uio;
+    wire [7:0] uio_out;
+    wire [7:0] uio_oe;
     
-    // Instantiate DUT
+    // Instantiate DUT with new interface
     tt_um_aksp_mbist_mbisr dut (
-        .clk(clk),
-        .rst_n(rst_n),
+        .ui_in(ui_in),      // Dedicated inputs
+        .uo_out(uo_out),    // Dedicated outputs
+        .uio_in(uio_in),    // IOs: Input path
+        .uio_out(uio_out),  // IOs: Output path
+        .uio_oe(uio_oe),    // IOs: Enable path
         .ena(ena),
-        .ui_in(ui_in),
-        .uo_out(uo_out),
-        .uio(uio)
+        .clk(clk),
+        .rst_n(rst_n)
     );
     
     // Waveform dump
@@ -32,6 +36,7 @@ module tt_um_aksp_mbist_mbisr_tb;
         // Initial state
         rst_n = 0;
         ui_in = 8'h00;
+        uio_in = 8'h00;
         
         // Release reset after 20ns
         #20 rst_n = 1;
@@ -48,6 +53,8 @@ module tt_um_aksp_mbist_mbisr_tb;
         while (uo_out[0] === 1'b0) begin
             #100;
             $display("[%0t] MBIST running... done=%b fail=%b", $time, uo_out[0], uo_out[1]);
+            // Optional: monitor uio signals
+            $display("[%0t] uio_out=%b uio_oe=%b", $time, uio_out, uio_oe);
         end
         
         // Test complete
@@ -59,11 +66,6 @@ module tt_um_aksp_mbist_mbisr_tb;
         end else begin
             $display("[%0t] PASS: Memory test completed successfully", $time);
         end
-        
-        // Additional tests could go here
-        // 1. Test with injected faults
-        // 2. Test repair functionality
-        // 3. Test multiple runs
         
         #100;
         $finish;
