@@ -1,10 +1,16 @@
 name: sim
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+
 jobs:
   sim:
     runs-on: ubuntu-24.04
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: TinyTapeout/tt-sim-action@ttihp26a
         with:
           top_module: "tt_um_aksp_mbist_mbisr_tb"
