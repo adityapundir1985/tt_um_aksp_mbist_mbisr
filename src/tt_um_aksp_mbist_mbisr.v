@@ -20,8 +20,8 @@ module tt_um_aksp_mbist_mbisr (
     input  wire       clk,
     input  wire       rst_n,
     // Power pins (added for LVS)
-    input  wire       vccd1,    // Primary power
-    input  wire       vssd1     // Primary ground
+    //input  wire       vccd1,    // Primary power
+   // input  wire       vssd1     // Primary ground
 );
 /* verilator lint_on UNUSEDSIGNAL */
 
