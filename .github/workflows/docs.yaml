@@ -1,23 +1,63 @@
 name: Documentation
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
-  docs:
+  build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Generate documentation
-        uses: TinyTapeout/action-docs@v3
+        run: |
+          # Create basic documentation structure
+          mkdir -p docs/_site
+          cp README.md docs/_site/
+          cp docs/spec.md docs/_site/
+          cp info.yaml docs/_site/
+          
+          # Create index.html
+          cat > docs/_site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>MBIST with MBISR - TinyTapeout Project</title>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+                  h1 { color: #333; }
+                  pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+                  a { color: #0366d6; text-decoration: none; }
+                  a:hover { text-decoration: underline; }
+              </style>
+          </head>
+          <body>
+              <h1>MBIST with MBISR - TinyTapeout Project</h1>
+              <p>Memory Built-In Self-Test with Built-In Self-Repair system.</p>
+              <h2>Repository</h2>
+              <p><a href="https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr">https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr</a></p>
+              <h2>Files</h2>
+              <ul>
+                  <li><a href="README.md">README.md</a> - Project overview</li>
+                  <li><a href="spec.md">spec.md</a> - Detailed specification</li>
+                  <li><a href="info.yaml">info.yaml</a> - Project metadata</li>
+              </ul>
+          </body>
+          </html>
+          EOF
+          
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          config_file: info.yaml
-          docs_dir: docs
+          path: 'docs/_site'
+          
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
