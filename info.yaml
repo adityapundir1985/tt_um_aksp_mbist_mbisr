@@ -5,13 +5,12 @@ project:
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
 
-# List source files (paths relative to repository root)
 source_files:
   - src/tt_um_aksp_mbist_mbisr.v
   - src/top.v
   - src/mbist_marchc_controller.v
   - src/mbisr_controller.v
+  - src/memory.v
 
-# Target clock period in ns for simulation helpers
 clock:
-  period: 10
+  period: 10    # 10 ns = 100 MHz (TinyTapeout standard)
