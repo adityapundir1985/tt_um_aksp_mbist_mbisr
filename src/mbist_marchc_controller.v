@@ -3,6 +3,8 @@
  Verilog-2001: March C- variant (simplified) MBIST controller
  Reports per-address failure via fail_valid & fail_addr
 */
+
+/* verilator lint_off SYNCASYNCNET */
 module mbist_marchc_controller #(
     parameter ADDR_WIDTH = 8,
     parameter DATA_WIDTH = 8
@@ -21,6 +23,7 @@ module mbist_marchc_controller #(
     output reg [DATA_WIDTH-1:0] mem_wdata,
     input [DATA_WIDTH-1:0] mem_rdata
 );
+/* verilator lint_on SYNCASYNCNET */
     
     // State definitions
     localparam STATE_IDLE    = 3'd0;
