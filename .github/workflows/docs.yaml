@@ -5,33 +5,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Create basic documentation
-        run: |
-          mkdir -p docs/_site
-          cp README.md docs/_site/
-          cp docs/spec.md docs/_site/ 2>/dev/null || true
-          cp info.yaml docs/_site/
-          
-          # Create simple index
-          cat > docs/_site/index.html << 'EOF'
-          <html>
-          <body>
-            <h1>MBIST with MBISR Documentation</h1>
-            <p>See <a href="README.md">README</a> for details.</p>
-          </body>
-          </html>
-          EOF
-          
+
+      - name: Generate documentation
+        uses: tinytapeout/action-docs@v1  # ✅ Correct: lowercase
+        with:
+          config_file: info.yaml
+          docs_dir: docs
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_site
