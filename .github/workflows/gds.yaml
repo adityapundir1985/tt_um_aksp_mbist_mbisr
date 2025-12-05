@@ -1,47 +1,48 @@
-name: GDS Generation
+name: gds
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
-  generate:
-    runs-on: ubuntu-latest
-
+  gds:
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Build tt_submission folder
-        run: |
-          mkdir -p tt_submission
-
-          # commit ID required by TinyTapeout
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission/commit_id.json
-
-          # Minimal placeholder GDS (valid TT tester accepts this)
-          cat > tt_submission/output.gds << 'EOF'
-          HEADER 600
-          BGNLIB 2025 12 05 2025 12 05 2025 12 05
-          LIBNAME TT_UM_AKSP_MBIST_MBISR
-          UNITS 0.001 1e-9
-          BGNSTR 2025 12 05 2025 12 05
-          STRNAME TOP
-          BOUNDARY
-          LAYER 1
-          DATATYPE 0
-          XY 0:0 100:0 100:100 0:100 0:0
-          ENDEL
-          ENDSTR
-          ENDLIB
-          EOF
-
-          echo "Contents of tt_submission:"
-          find tt_submission -type f
-
-      - name: Upload tt_submission artifact
-        uses: actions/upload-artifact@v4
+      - name: checkout repo
+        uses: actions/checkout@v4
         with:
-          name: tt_submission
-          path: |
-            tt_submission/**
+          submodules: recursive
+
+      - name: Build GDS
+        uses: TinyTapeout/tt-gds-action@ttihp26a
+        with:
+          pdk: ihp-sg13g2
+          librelane-version: 3.0.0.dev44
+
+  precheck:
+    needs: gds
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Run Tiny Tapeout Precheck
+        uses: TinyTapeout/tt-gds-action/precheck@ttihp26a
+
+  gl_test:
+    needs: gds
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: GL test
+        uses: TinyTapeout/tt-gds-action/gl_test@ttihp26a
+
+  viewer:
+    needs: gds
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+    steps:
+      - uses: TinyTapeout/tt-gds-action/viewer@ttihp26a
