@@ -9,18 +9,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create directory structure
+      - name: Debug info
         run: |
-          mkdir -p tt_submission_dir
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission_dir/commit_id.json
-          echo "GDS placeholder" > tt_submission_dir/output.gds
+          echo "GitHub SHA: ${{ github.sha }}"
+          echo "GitHub Ref: ${{ github.ref }}"
           
-          # Create zip
-          zip -r tt_submission.zip tt_submission_dir/
+      - name: Generate commit_id.json
+        run: |
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
+          echo "Generated commit_id.json:"
+          cat commit_id.json
           
-      - name: Upload tt_submission artifact
+      - name: Generate placeholder GDS
+        run: |
+          echo "GDS placeholder for TinyTapeout - MBIST with MBISR" > output.gds
+          echo "Generated output.gds"
+          
+      - name: List files before upload
+        run: |
+          echo "Files to upload:"
+          ls -la *.json *.gds 2>/dev/null || echo "No json/gds files found"
+          
+      - name: Create tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_submission.zip
+          path: |
+            commit_id.json
+            output.gds
