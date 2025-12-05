@@ -12,13 +12,13 @@ project:
   clock_hz: 10000000   # 10 MHz recommended
   tiles: "1x1"
   
-  # CORRECT PATH - files are in /src/ not src/
+  # USE RELATIVE PATHS (no leading slash)
   source_files:
-    - /src/tt_um_aksp_mbist_mbisr.v
-    - /src/top.v
-    - /src/mbist_marchc_controller.v
-    - /src/mbisr_controller.v
-    - /src/memory.v
+    - src/tt_um_aksp_mbist_mbisr.v
+    - src/top.v
+    - src/mbist_marchc_controller.v
+    - src/mbisr_controller.v
+    - src/memory.v
 
 pinout:
   ui[0]:  { name: start,    dir: input,  desc: "Start MBIST" }
