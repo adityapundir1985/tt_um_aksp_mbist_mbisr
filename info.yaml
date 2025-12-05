@@ -1,7 +1,9 @@
+yaml_version: 6
+
 project:
   title: "AKSP MBIST + MBISR"
-  author: "Aditya Kumar Singh Pundir"
-  description: "MBIST (March C-) and MBISR (CAM remap) Verilog project prepared for TinyTapeout IHP submission."
+  author: "Dr. Aditya Kumar Singh Pundir"
+  description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair (CAM-based remapping). Designed for TinyTapeout IHP submission."
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
 
@@ -13,4 +15,37 @@ source_files:
   - src/memory.v
 
 clock:
-  period: 10    # 10 ns = 100 MHz (TinyTapeout standard)
+  period: 10   # 10 ns clock period (100 MHz default for simulation)
+
+pins:
+  inputs:
+    - name: "clk"
+      description: "System clock"
+    - name: "rst_n"
+      description: "Active-low reset"
+    - name: "ena"
+      description: "Chip enable"
+    - name: "ui_in"
+      description: "User inputs (start test on ui_in[0])"
+
+  outputs:
+    - name: "uo_out"
+      description: "User outputs (done, fail indicators on [1:0])"
+
+  bidirectional:
+    - name: "uio"
+      description: "Bidirectional IO (not used, held high-Z)"
+
+documentation:
+  readme: "README.txt"
+  datasheet: "docs/spec.md"
+
+metadata:
+  repository: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
+  version: "1.0"
+  license: "MIT"
+
+maintainer:
+  name: "Dr. Aditya Kumar Singh Pundir"
+  github: "adityapundir1985"
+  email: "N/A"
