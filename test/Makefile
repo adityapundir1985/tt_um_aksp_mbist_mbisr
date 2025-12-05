@@ -6,7 +6,7 @@ IVERILOG := iverilog
 VVP := vvp
 
 # Directories
-SRC_DIR := ../src
+SRC_DIR := src
 TEST_DIR := .
 
 # Source files
