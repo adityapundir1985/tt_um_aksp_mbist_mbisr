@@ -13,11 +13,11 @@ project:
   clock_hz: 10000000
   
   source_files:
-    - src/tt_um_aksp_mbist_mbisr.v
-    - src/top.v
-    - src/mbist_marchc_controller.v
-    - src/mbisr_controller.v
-    - src/memory.v
+    - tt_um_aksp_mbist_mbisr.v
+    - top.v
+    - mbist_marchc_controller.v
+    - mbisr_controller.v
+    - memory.v
 
 pinout:
   ui[0]: { name: start, dir: input }
