@@ -38,14 +38,14 @@ module memory #(
         end else begin
             // Memory write operation
             if (mem_en && mem_we) begin
-                if (mem_addr < MEM_SIZE) begin
+                if ($unsigned(mem_addr) < MEM_SIZE) begin  // Use $unsigned() to avoid width warning
                     mem_array[mem_addr] <= mem_wdata;
                 end
             end
             
             // Memory read operation
             if (mem_en && !mem_we) begin
-                if (mem_addr < MEM_SIZE) begin
+                if ($unsigned(mem_addr) < MEM_SIZE) begin  // Use $unsigned() to avoid width warning
                     mem_rdata <= mem_array[mem_addr];
                 end else begin
                     mem_rdata <= {DATA_WIDTH{1'b0}};
