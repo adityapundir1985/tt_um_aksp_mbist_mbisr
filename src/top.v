@@ -20,8 +20,10 @@ module top(
     // ========== Wire Declarations ==========
     
     // Dummy wires for unused outputs
+    /* verilator lint_off UNUSEDSIGNAL */
     wire dummy_busy;
     wire [DATA_WIDTH-1:0] dummy_user_rdata;
+    /* verilator lint_on UNUSEDSIGNAL */
     
     // MBIST controller signals
     wire                bist_done;
