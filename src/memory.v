@@ -27,7 +27,11 @@ module memory #(
         end
     end
     
-    // Reset logic
+    // Extended address for comparison to avoid width warnings
+    localparam COMPARE_WIDTH = (ADDR_WIDTH < 9) ? 9 : ADDR_WIDTH;
+    wire [COMPARE_WIDTH-1:0] mem_addr_ext = {{(COMPARE_WIDTH-ADDR_WIDTH){1'b0}}, mem_addr};
+    
+    // Reset and memory operations
     always @(posedge clk) begin
         if (rst) begin
             // Initialize memory to zero on reset
@@ -35,27 +39,21 @@ module memory #(
                 mem_array[i] <= {DATA_WIDTH{1'b0}};
             end
             mem_rdata <= {DATA_WIDTH{1'b0}};
-        end
-    end
-    
-    // Memory write operation
-    always @(posedge clk) begin
-        if (mem_en && mem_we && !rst) begin
-            if ($unsigned(mem_addr) < MEM_SIZE) begin
-                mem_array[mem_addr] <= mem_wdata;
+        end else begin
+            // Memory write operation
+            if (mem_en && mem_we) begin
+                if (mem_addr_ext < MEM_SIZE) begin  // Use extended address
+                    mem_array[mem_addr] <= mem_wdata;
+                end
             end
-        end
-    end
-    
-    // Memory read operation (synchronous)
-    always @(posedge clk) begin
-        if (rst) begin
-            mem_rdata <= {DATA_WIDTH{1'b0}};
-        end else if (mem_en && !mem_we) begin
-            if ($unsigned(mem_addr) < MEM_SIZE) begin
-                mem_rdata <= mem_array[mem_addr];
-            end else begin
-                mem_rdata <= {DATA_WIDTH{1'b0}};
+            
+            // Memory read operation
+            if (mem_en && !mem_we) begin
+                if (mem_addr_ext < MEM_SIZE) begin  // Use extended address
+                    mem_rdata <= mem_array[mem_addr];
+                end else begin
+                    mem_rdata <= {DATA_WIDTH{1'b0}};
+                end
             end
         end
     end
