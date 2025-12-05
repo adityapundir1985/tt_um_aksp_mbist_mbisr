@@ -3,11 +3,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docs/**'
-      - 'src/**'
-      - 'test/**'
-      - 'info.yaml'
-      - 'README.md'
+  - 'docs/**'
+  - 'src/**'
+  - 'test/**'
+  - 'info.yaml'
+  - 'README.md'
   workflow_dispatch:
 
 permissions:
