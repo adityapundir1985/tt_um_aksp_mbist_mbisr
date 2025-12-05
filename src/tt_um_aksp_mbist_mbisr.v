@@ -18,10 +18,8 @@ module tt_um_aksp_mbist_mbisr (
     output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
     input  wire       ena,
     input  wire       clk,
-    input  wire       rst_n,
-    // Power pins (added for LVS)
-    //input  wire       vccd1,    // Primary power
-   // input  wire       vssd1     // Primary ground
+    input  wire       rst_n
+    
 );
 /* verilator lint_on UNUSEDSIGNAL */
 
