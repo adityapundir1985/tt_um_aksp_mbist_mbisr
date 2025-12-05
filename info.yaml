@@ -6,10 +6,10 @@ project:
   description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair (CAM-based address remapping). Designed for TinyTapeout IHP submission."
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
-  tiles: 1
+  tiles: "1x1"  
 
 source_files:
-  - src/tt_um_aksp_mbist_mbisr.v
+  - src/tt_um_aksp_mbisr_mbisr.v
   - src/top.v
   - src/mbist_marchc_controller.v
   - src/mbisr_controller.v
@@ -48,13 +48,13 @@ pinout:
       description: "Bidirectional IO (unused, held high-Z)"
 
 documentation:
-  readme: "README.txt"
+  readme: "README.md"  
   datasheet: "docs/spec.md"
 
 metadata:
   repository: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
   version: "1.0"
-  license: "MIT"
+  license: "Apache-2.0"  
 
 maintainer:
   name: "Dr. Aditya Kumar Singh Pundir"
