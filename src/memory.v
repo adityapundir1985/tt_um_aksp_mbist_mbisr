@@ -27,7 +27,7 @@ module memory #(
         end
     end
     
-    // Reset and memory operations
+    // Reset logic
     always @(posedge clk) begin
         if (rst) begin
             // Initialize memory to zero on reset
@@ -35,21 +35,27 @@ module memory #(
                 mem_array[i] <= {DATA_WIDTH{1'b0}};
             end
             mem_rdata <= {DATA_WIDTH{1'b0}};
-        end else begin
-            // Memory write operation
-            if (mem_en && mem_we) begin
-                if ($unsigned(mem_addr) < MEM_SIZE) begin  // Use $unsigned() to avoid width warning
-                    mem_array[mem_addr] <= mem_wdata;
-                end
+        end
+    end
+    
+    // Memory write operation
+    always @(posedge clk) begin
+        if (mem_en && mem_we && !rst) begin
+            if ($unsigned(mem_addr) < MEM_SIZE) begin
+                mem_array[mem_addr] <= mem_wdata;
             end
-            
-            // Memory read operation
-            if (mem_en && !mem_we) begin
-                if ($unsigned(mem_addr) < MEM_SIZE) begin  // Use $unsigned() to avoid width warning
-                    mem_rdata <= mem_array[mem_addr];
-                end else begin
-                    mem_rdata <= {DATA_WIDTH{1'b0}};
-                end
+        end
+    end
+    
+    // Memory read operation (synchronous)
+    always @(posedge clk) begin
+        if (rst) begin
+            mem_rdata <= {DATA_WIDTH{1'b0}};
+        end else if (mem_en && !mem_we) begin
+            if ($unsigned(mem_addr) < MEM_SIZE) begin
+                mem_rdata <= mem_array[mem_addr];
+            end else begin
+                mem_rdata <= {DATA_WIDTH{1'b0}};
             end
         end
     end
