@@ -1,106 +1,49 @@
-# info.yaml for TinyTapeout IHP 26a
-yaml_version: 2
+yaml_version: 6
 
 project:
-  title: "MBIST/MBISR"
-  author: "Your Name"
-  description: "Memory Built-In Self Test / Memory Built-In Self Repair"
-  documentation: "README.md"
-  
-  # Required for IHP 26a
-  tiles: 1
-  language: "systemverilog"  # or "verilog"
-  clock_hz: 10000000  # 10 MHz clock frequency
-
-digital:
-  source: "verilog"
+  name: "tt_um_aksp_mbist_mbisr"
+  author: "Aditya Kumar Singh Pundir"
+  email: "aditya.pundir@gmail.com"
+  description: "MBIST (March C-) + MBISR (CAM remap) memory test and repair system for TinyTapeout IHP 26a."
+  language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
+  clock_hz: 10000000   # 10 MHz recommended
+  tiles: "1x1"
 
-analog: {}
+source_files:
+  - src/tt_um_aksp_mbist_mbisr.v
+  - src/top.v
+  - src/mbist_marchc_controller.v
+  - src/mbisr_controller.v
+  - src/memory.v
 
-# Pinout must follow this exact format
 pinout:
-  ui:
-    - name: ui0
-      desc: "Clock input"
-      dir: "IN"
-    - name: ui1
-      desc: "Reset (active high)"
-      dir: "IN"
-    - name: ui2
-      desc: "Test enable"
-      dir: "IN"
-    - name: ui3
-      desc: "Scan enable"
-      dir: "IN"
-    - name: ui4
-      desc: "BIST start"
-      dir: "IN"
-    - name: ui5
-      desc: "Spare input 1"
-      dir: "IN"
-    - name: ui6
-      desc: "Spare input 2"
-      dir: "IN"
-    - name: ui7
-      desc: "Spare input 3"
-      dir: "IN"
-  
-  uo:
-    - name: uo0
-      desc: "BIST done"
-      dir: "OUT"
-    - name: uo1
-      desc: "BIST pass/fail"
-      dir: "OUT"
-    - name: uo2
-      desc: "Error detected"
-      dir: "OUT"
-    - name: uo3
-      desc: "Repair complete"
-      dir: "OUT"
-    - name: uo4
-      desc: "Test status 0"
-      dir: "OUT"
-    - name: uo5
-      desc: "Test status 1"
-      dir: "OUT"
-    - name: uo6
-      desc: "Test status 2"
-      dir: "OUT"
-    - name: uo7
-      desc: "Test status 3"
-      dir: "OUT"
-  
-  uio:
-    - name: uio0
-      desc: "Bidirectional test 0"
-      dir: "BIDIR"
-    - name: uio1
-      desc: "Bidirectional test 1"
-      dir: "BIDIR"
-    - name: uio2
-      desc: "Bidirectional test 2"
-      dir: "BIDIR"
-    - name: uio3
-      desc: "Bidirectional test 3"
-      dir: "BIDIR"
-    - name: uio4
-      desc: "Bidirectional test 4"
-      dir: "BIDIR"
-    - name: uio5
-      desc: "Bidirectional test 5"
-      dir: "BIDIR"
-    - name: uio6
-      desc: "Bidirectional test 6"
-      dir: "BIDIR"
-    - name: uio7
-      desc: "Bidirectional test 7"
-      dir: "BIDIR"
+  ui[0]:  { name: start,    direction: input,  description: "Start MBIST" }
+  ui[1]:  { name: unused1,  direction: input }
+  ui[2]:  { name: unused2,  direction: input }
+  ui[3]:  { name: unused3,  direction: input }
+  ui[4]:  { name: unused4,  direction: input }
+  ui[5]:  { name: unused5,  direction: input }
+  ui[6]:  { name: unused6,  direction: input }
+  ui[7]:  { name: unused7,  direction: input }
 
-# Optional sections
-reset:
-  active_high: true
+  uo[0]:  { name: done,     direction: output, description: "Test complete" }
+  uo[1]:  { name: fail,     direction: output, description: "Test fail flag" }
+  uo[2]:  { name: unused2,  direction: output }
+  uo[3]:  { name: unused3,  direction: output }
+  uo[4]:  { name: unused4,  direction: output }
+  uo[5]:  { name: unused5,  direction: output }
+  uo[6]:  { name: unused6,  direction: output }
+  uo[7]:  { name: unused7,  direction: output }
 
-power:
-  voltage: 3.3
+  uio[0]: { name: n/a, direction: inout }
+  uio[1]: { name: n/a, direction: inout }
+  uio[2]: { name: n/a, direction: inout }
+  uio[3]: { name: n/a, direction: inout }
+  uio[4]: { name: n/a, direction: inout }
+  uio[5]: { name: n/a, direction: inout }
+  uio[6]: { name: n/a, direction: inout }
+  uio[7]: { name: n/a, direction: inout }
+
+clock:
+  period: 10
