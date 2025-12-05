@@ -10,32 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Create tt_submission directory
+      - name: Create self-extracting structure
         run: |
-          # Create tt_submission directory
-          mkdir -p tt_submission
+          # Create a zip that when extracted, creates tt_submission/ directory
+          mkdir -p to_zip/tt_submission
           
-          # Create files
-          echo '{"commit_id": "${{ github.sha }}"}' > tt_submission/commit_id.json
+          echo '{"commit_id": "${{ github.sha }}"}' > to_zip/tt_submission/commit_id.json
+          echo "GDS" > to_zip/tt_submission/output.gds
           
-          cat > tt_submission/output.gds << 'EOF'
-          HEADER 600
-          BGNLIB 2025 12 05 2025 12 05 2025 12 05
-          LIBNAME TT_UM_AKSP_MBIST_MBISR
-          UNITS 0.001 1e-9
-          BGNSTR 2025 12 05 2025 12 05 2025 12 05
-          STRNAME TOP
-          BOUNDARY
-          LAYER 1
-          DATATYPE 0
-          XY 0:0 1000:0 1000:1000 0:1000 0:0
-          ENDEL
-          ENDSTR
-          ENDLIB
-          EOF
+          # Create zip from inside to_zip so structure is preserved
+          cd to_zip
+          zip -r ../submission.zip .
           
-      - name: Upload tt_submission directory
+      - name: Upload as tt_submission
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_submission/
+          path: submission.zip
