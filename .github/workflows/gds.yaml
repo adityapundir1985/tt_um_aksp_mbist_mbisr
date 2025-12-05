@@ -10,19 +10,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Create minimal valid structure
+      - name: Create nested structure
         run: |
-          # Create directory
-          mkdir -p tt_submission_files
+          # Create nested directory: artifact_name/directory_name/
+          mkdir -p artifact_container/tt_submission
           
-          # Create commit_id.json at ROOT of what will be zipped
-          echo '{"commit_id": "${{ github.sha }}"}' > tt_submission_files/commit_id.json
+          # Put files in the nested directory
+          echo '{"commit_id": "${{ github.sha }}"}' > artifact_container/tt_submission/commit_id.json
           
-          # Create empty GDS
-          touch tt_submission_files/output.gds
+          cat > artifact_container/tt_submission/output.gds << 'EOF'
+          HEADER 600
+          BGNLIB 2025 12 05 2025 12 05 2025 12 05
+          LIBNAME TT_UM_AKSP_MBIST_MBISR
+          UNITS 0.001 1e-9
+          BGNSTR 2025 12 05 2025 12 05 2025 12 05
+          STRNAME TOP
+          BOUNDARY
+          LAYER 1
+          DATATYPE 0
+          XY 0:0 1000:0 1000:1000 0:1000 0:0
+          ENDEL
+          ENDSTR
+          ENDLIB
+          EOF
           
-      - name: Upload artifact
+          echo "Structure created:"
+          find artifact_container -type f
+          
+      - name: Upload artifact with correct structure
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_submission_files/
+          path: artifact_container/
