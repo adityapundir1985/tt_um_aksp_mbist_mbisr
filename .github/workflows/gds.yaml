@@ -9,24 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Create zip with tt_submission as root directory inside
+
+      - name: Generate commit_id.json
         run: |
-          # Create tt_submission directory
-          mkdir -p tt_submission
-          
-          # Create files
-          echo '{"commit_id": "${{ github.sha }}"}' > tt_submission/commit_id.json
-          echo "GDS" > tt_submission/output.gds
-          
-          # Create zip from current directory
-          zip -r tt_artifact.zip tt_submission/
-          
-          # Check what's inside
-          unzip -l tt_artifact.zip
-          
-      - name: Upload artifact
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
+
+      - name: Generate placeholder GDS
+        run: |
+          echo "GDS placeholder for TinyTapeout" > output.gds
+
+      - name: Create tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_artifact.zip
+          path: |
+            commit_id.json
+            output.gds
