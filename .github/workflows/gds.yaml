@@ -12,31 +12,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug info
+      - name: Create tt_submission directory structure
         run: |
-          echo "GitHub SHA: ${{ github.sha }}"
-          echo "GitHub Ref: ${{ github.ref }}"
+          # Create tt_submission directory
+          mkdir -p tt_submission
           
-      - name: Generate commit_id.json
-        run: |
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
-          echo "Generated commit_id.json:"
-          cat commit_id.json
+          # Create files INSIDE tt_submission/
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission/commit_id.json
+          echo "GDS placeholder for MBIST with MBISR" > tt_submission/output.gds
           
-      - name: Generate placeholder GDS
-        run: |
-          echo "GDS placeholder for TinyTapeout - MBIST with MBISR" > output.gds
-          echo "Generated output.gds"
+          # Create a zip of the tt_submission directory
+          zip -r tt_submission_artifact.zip tt_submission/
           
-      - name: List files before upload
-        run: |
-          echo "Files to upload:"
-          ls -la *.json *.gds 2>/dev/null || echo "No json/gds files found"
+          echo "Created structure:"
+          find . -name "*.json" -o -name "*.gds" -o -name "*.zip"
           
-      - name: Create tt_submission artifact
+      - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: |
-            commit_id.json
-            output.gds
+          path: tt_submission_artifact.zip
