@@ -1,8 +1,13 @@
 name: fpga
-on: [push]
+
+on:
+  push:
+
 jobs:
   fpga:
     runs-on: ubuntu-24.04
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: TinyTapeout/tt-fpga-action@ttihp26a
