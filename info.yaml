@@ -1,60 +1,106 @@
-yaml_version: 6
-
 project:
   title: "AKSP MBIST + MBISR"
   author: "Dr. Aditya Kumar Singh Pundir"
-  description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair (CAM-based address remapping). Designed for TinyTapeout IHP submission."
+  description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair."
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
-  tiles: "1x1"  
-
-source_files:
-  - src/tt_um_aksp_mbisr_mbisr.v
-  - src/top.v
-  - src/mbist_marchc_controller.v
-  - src/mbisr_controller.v
-  - src/memory.v
-
-clock:
-  period: 10
+  clock_hz: 10000000  # 10 MHz
+  source_files:
+    - src/tt_um_aksp_mbist_mbisr.v
+    - src/top.v
+    - src/mbist_marchc_controller.v
+    - src/mbisr_controller.v
+    - src/memory.v
 
 pinout:
-  pins:
-    - name: "clk"
+  ui:  # User inputs
+    - name: "start"
       direction: "input"
-      description: "System clock"
-
-    - name: "rst_n"
+      description: "Start test pulse"
+    - name: "ui_in_1"
       direction: "input"
-      description: "Active-low reset"
-
-    - name: "ena"
+      description: "Reserved"
+    - name: "ui_in_2"
       direction: "input"
-      description: "Chip enable"
-
-    - name: "ui_in"
+      description: "Reserved"
+    - name: "ui_in_3"
       direction: "input"
-      width: 8
-      description: "User input bus (ui_in[0] = start)"
+      description: "Reserved"
+    - name: "ui_in_4"
+      direction: "input"
+      description: "Reserved"
+    - name: "ui_in_5"
+      direction: "input"
+      description: "Reserved"
+    - name: "ui_in_6"
+      direction: "input"
+      description: "Reserved"
+    - name: "ui_in_7"
+      direction: "input"
+      description: "Reserved"
 
-    - name: "uo_out"
+  uo:  # User outputs
+    - name: "done"
       direction: "output"
-      width: 8
-      description: "User output bus (uo_out[0] = done, uo_out[1] = fail)"
+      description: "Test complete"
+    - name: "fail"
+      direction: "output"
+      description: "Test failure"
+    - name: "uo_out_2"
+      direction: "output"
+      description: "Reserved"
+    - name: "uo_out_3"
+      direction: "output"
+      description: "Reserved"
+    - name: "uo_out_4"
+      direction: "output"
+      description: "Reserved"
+    - name: "uo_out_5"
+      direction: "output"
+      description: "Reserved"
+    - name: "uo_out_6"
+      direction: "output"
+      description: "Reserved"
+    - name: "uo_out_7"
+      direction: "output"
+      description: "Reserved"
 
-    - name: "uio"
+  uio:  # Bidirectional
+    - name: "uio_0"
       direction: "inout"
-      width: 8
-      description: "Bidirectional IO (unused, held high-Z)"
+      description: "Unused"
+    - name: "uio_1"
+      direction: "inout"
+      description: "Unused"
+    - name: "uio_2"
+      direction: "inout"
+      description: "Unused"
+    - name: "uio_3"
+      direction: "inout"
+      description: "Unused"
+    - name: "uio_4"
+      direction: "inout"
+      description: "Unused"
+    - name: "uio_5"
+      direction: "inout"
+      description: "Unused"
+    - name: "uio_6"
+      direction: "inout"
+      description: "Unused"
+    - name: "uio_7"
+      direction: "inout"
+      description: "Unused"
+
+tiles: 1x1
 
 documentation:
-  readme: "README.md"  
+  readme: "README.md"
   datasheet: "docs/spec.md"
 
 metadata:
   repository: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
   version: "1.0"
-  license: "Apache-2.0"  
+  license: "Apache-2.0"
 
 maintainer:
   name: "Dr. Aditya Kumar Singh Pundir"
