@@ -1,0 +1,62 @@
+yaml_version: 6
+
+project:
+  title: "AKSP MBIST + MBISR"
+  author: "Dr. Aditya Kumar Singh Pundir"
+  description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair (CAM-based address remapping). Designed for TinyTapeout IHP submission."
+  language: "verilog"
+  top_module: "tt_um_aksp_mbist_mbisr"
+  tiles: "1x1"  
+
+source_files:
+  - src/tt_um_aksp_mbisr_mbisr.v
+  - src/top.v
+  - src/mbist_marchc_controller.v
+  - src/mbisr_controller.v
+  - src/memory.v
+
+clock:
+  period: 10
+
+pinout:
+  pins:
+    - name: "clk"
+      direction: "input"
+      description: "System clock"
+
+    - name: "rst_n"
+      direction: "input"
+      description: "Active-low reset"
+
+    - name: "ena"
+      direction: "input"
+      description: "Chip enable"
+
+    - name: "ui_in"
+      direction: "input"
+      width: 8
+      description: "User input bus (ui_in[0] = start)"
+
+    - name: "uo_out"
+      direction: "output"
+      width: 8
+      description: "User output bus (uo_out[0] = done, uo_out[1] = fail)"
+
+    - name: "uio"
+      direction: "inout"
+      width: 8
+      description: "Bidirectional IO (unused, held high-Z)"
+
+documentation:
+  readme: "README.md"  
+  datasheet: "docs/spec.md"
+
+metadata:
+  repository: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
+  version: "1.0"
+  license: "Apache-2.0"  
+
+maintainer:
+  name: "Dr. Aditya Kumar Singh Pundir"
+  github: "adityapundir1985"
+  email: "aditya.pundir@gmail.com"
