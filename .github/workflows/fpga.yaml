@@ -1,23 +1,8 @@
-name: FPGA
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
+name: fpga
+on: [push]
 jobs:
   fpga:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Generate FPGA placeholder
-        run: |
-          echo "FPGA bitstream placeholder for MBIST with MBISR" > fpga.bit
-          
-      - name: Upload FPGA artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fpga
-          path: fpga.bit
+      - uses: TinyTapeout/tt-fpga-action@ttihp26a
