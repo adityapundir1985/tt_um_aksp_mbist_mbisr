@@ -10,36 +10,18 @@ project:
   top_module: "tt_um_aksp_mbist_mbisr"
   documentation: "README.md"
   tiles: "1x1"
-  clock_hz: 10000000
+  clock_hz: 10000000  # 10 MHz 
   
+  # source_files MUST be inside project section
   source_files:
     - tt_um_aksp_mbist_mbisr.v
     - top.v
     - mbist_marchc_controller.v
     - mbisr_controller.v
     - memory.v
+    # Remove testbench from source_files - it's only for simulation
+    # - tt_um_aksp_mbist_mbisr_tb.v
 
-# Use the ports format instead of pinout
-ports:
-  # Digital I/O ports
-  - ui_in: {bits: 8, direction: input}
-  - uo_out: {bits: 8, direction: output}
-  - uio_in: {bits: 8, direction: input}
-  - uio_out: {bits: 8, direction: output}
-  - uio_oe: {bits: 8, direction: output}
-  
-  # Power ports (these were missing)
-  - vccd1: {direction: input}
-  - vssd1: {direction: input}
-  
-  # Clock and reset
-  - clk: {direction: input}
-  - rst_n: {direction: input}
-  
-  # Enable signal
-  - ena: {direction: input}
-
-# Keep pinout for documentation if needed, but the ports section above is what matters
 pinout:
   ui[0]: { name: start, dir: input }
   ui[1]: { name: ui1, dir: input }
