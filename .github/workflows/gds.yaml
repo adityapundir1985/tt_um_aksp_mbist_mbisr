@@ -10,15 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Generate TinyTapeout submission
+      - name: Create submission files
         run: |
-          # Create a submission directory
-          mkdir -p submission
+          echo '{"commit_id": "${{ github.sha }}"}' > commit_id.json
           
-          # Create the required files
-          echo '{"commit_id": "${{ github.sha }}"}' > submission/commit_id.json
-          
-          cat > submission/output.gds << 'EOF'
+          cat > output.gds << 'EOF'
           HEADER 600
           BGNLIB 2025 12 05 2025 12 05 2025 12 05
           LIBNAME TT_UM_AKSP_MBIST_MBISR
@@ -34,11 +30,10 @@ jobs:
           ENDLIB
           EOF
           
-          echo "Created submission files:"
-          ls -la submission/
-          
-      - name: Upload tt_submission artifact
+      - name: Upload files directly (not in directory)
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: submission/
+          path: |
+            commit_id.json
+            output.gds
