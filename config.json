@@ -9,8 +9,7 @@
       "src/mbisr_controller.v",
       "src/memory.v",
       "test/tt_um_aksp_mbist_mbisr_tb.v"
-    ],
-    "include_dirs": ["src", "test"]
+    ]
   },
   "synth": {
     "tool": "yosys",
@@ -22,5 +21,9 @@
       "src/mbisr_controller.v",
       "src/memory.v"
     ]
+  },
+  "fpga": {
+    "tool": "symbiflow",
+    "part": "xc7a35tcsg324-1"
   }
 }
