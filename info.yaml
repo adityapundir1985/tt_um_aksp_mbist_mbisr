@@ -10,7 +10,7 @@ project:
   top_module: "tt_um_aksp_mbist_mbisr"
   documentation: "README.md"
   tiles: "1x1"
-  clock_hz: 10000000  # 10 MHz - ADD THIS!
+  clock_hz: 10000000  # 10 MHz 
   
   # source_files MUST be inside project section
   source_files:
