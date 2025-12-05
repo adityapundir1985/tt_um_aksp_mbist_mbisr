@@ -15,11 +15,11 @@ module tt_um_aksp_mbist_mbisr_tb;
     
     // Instantiate DUT with new interface
     tt_um_aksp_mbist_mbisr dut (
-        .ui_in(ui_in),      // Dedicated inputs
-        .uo_out(uo_out),    // Dedicated outputs
-        .uio_in(uio_in),    // IOs: Input path
-        .uio_out(uio_out),  // IOs: Output path
-        .uio_oe(uio_oe),    // IOs: Enable path
+        .ui_in(ui_in),
+        .uo_out(uo_out),
+        .uio_in(uio_in),
+        .uio_out(uio_out),
+        .uio_oe(uio_oe),
         .ena(ena),
         .clk(clk),
         .rst_n(rst_n)
@@ -53,8 +53,6 @@ module tt_um_aksp_mbist_mbisr_tb;
         while (uo_out[0] === 1'b0) begin
             #100;
             $display("[%0t] MBIST running... done=%b fail=%b", $time, uo_out[0], uo_out[1]);
-            // Optional: monitor uio signals
-            $display("[%0t] uio_out=%b uio_oe=%b", $time, uio_out, uio_oe);
         end
         
         // Test complete
@@ -69,17 +67,6 @@ module tt_um_aksp_mbist_mbisr_tb;
         
         #100;
         $finish;
-    end
-    
-    // Monitor signals
-    initial begin
-        #10;
-        forever begin
-            #100;
-            if (uo_out[0] === 1'b1) begin
-                $display("[%0t] MBIST finished with status: fail=%b", $time, uo_out[1]);
-            end
-        end
     end
     
     // Timeout protection
