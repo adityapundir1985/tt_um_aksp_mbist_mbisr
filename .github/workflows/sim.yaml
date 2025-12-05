@@ -6,13 +6,12 @@ on:
 
 jobs:
   sim:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive  # Important for TinyTapeout!
+          submodules: recursive
 
-      - uses: tinytapeout/tt-action-sim@v3  # Correct action name and version
-        with:
-          top_module: "tt_um_aksp_mbist_mbisr_tb"
+      - name: Run simulation
+        uses: tinytapeout/action-iverilog-simulation@v2
