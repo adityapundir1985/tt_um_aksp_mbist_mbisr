@@ -20,7 +20,6 @@ module top(
     // ========== Wire Declarations ==========
     
     // MBIST controller signals
-    wire                bist_busy;
     wire                bist_done;
     wire                bist_fail;
     wire                bist_fail_valid;
@@ -36,14 +35,6 @@ module top(
     wire                mbisr_mem_we;
     wire                mbisr_mem_en;
     wire [DATA_WIDTH-1:0] mbisr_mem_rdata;
-    wire [DATA_WIDTH-1:0] user_rdata;  // Not used, but required by interface
-    
-    // Memory interface signals
-    wire                mem_we;
-    wire                mem_en;
-    wire [ADDR_WIDTH-1:0] mem_addr;
-    wire [DATA_WIDTH-1:0] mem_wdata;
-    wire [DATA_WIDTH-1:0] mem_rdata;
     
     // ========== Controller Instantiations ==========
     
@@ -55,7 +46,7 @@ module top(
         .clk(clk),
         .rst(rst),
         .start(start),
-        .busy(bist_busy),
+        .busy(),           // Not used
         .done(bist_done),
         .fail(bist_fail),
         .fail_valid(bist_fail_valid),
@@ -80,8 +71,8 @@ module top(
         .user_addr(bist_mem_addr),
         .user_wdata(bist_mem_wdata),
         .user_we(bist_mem_we),
-        .user_en(1'b1),  // Always enabled during BIST
-        .user_rdata(user_rdata),  // Connected but not used
+        .user_en(1'b1),    // Always enabled during BIST
+        .user_rdata(),     // Not used
         .mem_addr(mbisr_mem_addr),
         .mem_wdata(mbisr_mem_wdata),
         .mem_we(mbisr_mem_we),
