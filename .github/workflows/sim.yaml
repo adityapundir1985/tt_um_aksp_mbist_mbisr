@@ -10,7 +10,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive  # Important for TinyTapeout!
 
-      - uses: TinyTapeout/tt-sim-action@ttihp26a
+      - uses: tinytapeout/tt-action-sim@v3  # Correct action name and version
         with:
           top_module: "tt_um_aksp_mbist_mbisr_tb"
