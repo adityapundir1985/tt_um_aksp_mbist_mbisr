@@ -14,18 +14,13 @@ jobs:
 
       - name: Create files
         run: |
-          # Create files at current directory (not inside tt_submission/)
           echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
-          echo "GDS placeholder for MBIST with MBISR" > output.gds
+          echo "GDS placeholder" > output.gds
           
-          # Create zip from current directory
-          zip tt_submission.zip commit_id.json output.gds
-          
-          echo "Created files:"
-          ls -la *.json *.gds *.zip
-          
-      - name: Upload tt_submission artifact
+      - name: Upload files directly
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_submission.zip
+          path: |
+            commit_id.json
+            output.gds
