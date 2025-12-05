@@ -19,8 +19,6 @@ project:
     - mbist_marchc_controller.v
     - mbisr_controller.v
     - memory.v
-    # Remove testbench from source_files - it's only for simulation
-    # - tt_um_aksp_mbist_mbisr_tb.v
 
 pinout:
   ui[0]: { name: start, dir: input }
