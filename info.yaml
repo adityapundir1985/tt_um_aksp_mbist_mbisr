@@ -2,7 +2,7 @@ yaml_version: 6
 
 project:
   name: "tt_um_aksp_mbist_mbisr"
-  title: "MBIST/MBISR Memory Test and Repair"  # ADD THIS
+  title: "MBIST/MBISR Memory Test and Repair"
   author: "Aditya Kumar Singh Pundir"
   email: "aditya.pundir@gmail.com"
   description: "MBIST (March C-) + MBISR (CAM remap) memory test and repair system for TinyTapeout IHP 26a."
@@ -10,15 +10,15 @@ project:
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
   clock_hz: 10000000   # 10 MHz recommended
-  tiles: "1x1"  # This should be a string "1x1" for version 6
+  tiles: "1x1"
   
-  # REQUIRED for version 6
+  # CORRECT PATH - files are in /src/ not src/
   source_files:
-    - src/tt_um_aksp_mbist_mbisr.v
-    - src/top.v
-    - src/mbist_marchc_controller.v
-    - src/mbisr_controller.v
-    - src/memory.v
+    - /src/tt_um_aksp_mbist_mbisr.v
+    - /src/top.v
+    - /src/mbist_marchc_controller.v
+    - /src/mbisr_controller.v
+    - /src/memory.v
 
 pinout:
   ui[0]:  { name: start,    dir: input,  desc: "Start MBIST" }
@@ -48,8 +48,5 @@ pinout:
   uio[6]: { name: n/a, dir: inout, desc: "Bidirectional 6" }
   uio[7]: { name: n/a, dir: inout, desc: "Bidirectional 7" }
 
-# Optional sections
 power:
   voltage: 3.3
-
-# Remove clock: section since clock_hz is in project
