@@ -1,0 +1,26 @@
+name: Simulation
+on: [push, pull_request]
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog gtkwave
+          
+      - name: Run simulation
+        run: |
+          cd test
+          iverilog -o sim.out -I../src ../src/tt_um_aksp_mbist_mbisr.v ../src/top.v ../src/mbist_marchc_controller.v ../src/mbisr_controller.v ../src/memory.v tt_um_aksp_mbist_mbisr_tb.v
+          vvp sim.out
+          
+      - name: Upload waveform
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: waveform
+          path: test/wave.vcd

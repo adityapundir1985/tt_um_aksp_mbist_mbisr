@@ -1,0 +1,20 @@
+# Simulation outputs
+sim.out
+wave.vcd
+*.vcd
+*.fsdb
+
+# Object files
+*.o
+
+# Backup files
+*~
+*.bak
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
