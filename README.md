@@ -123,7 +123,12 @@ Author
 ------
 Dr Aditya Kumar Singh Pundir (adityapundir1985)
 
+
 LinkedIn: https://www.linkedin.com/in/dradityapundir/
+
+Dr Pallavi Singh
+
+LinkedIn: https://www.linkedin.com/in/dr-pallavi-singh-554a8826a
 
 Acknowledgments
 ---------------
