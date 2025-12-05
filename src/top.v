@@ -111,9 +111,4 @@ module top(
     assign done = bist_done;
     assign fail = bist_fail;
     
-    // ========== Debug/Test Signals (optional) ==========
-    // These can be used for debugging but won't affect synthesis
-    // wire [3:0] debug_repair_count;
-    // assign debug_repair_count = ...;
-    
 endmodule
