@@ -19,6 +19,27 @@ project:
     - mbisr_controller.v
     - memory.v
 
+# Use the ports format instead of pinout
+ports:
+  # Digital I/O ports
+  - ui_in: {bits: 8, direction: input}
+  - uo_out: {bits: 8, direction: output}
+  - uio_in: {bits: 8, direction: input}
+  - uio_out: {bits: 8, direction: output}
+  - uio_oe: {bits: 8, direction: output}
+  
+  # Power ports (these were missing)
+  - vccd1: {direction: input}
+  - vssd1: {direction: input}
+  
+  # Clock and reset
+  - clk: {direction: input}
+  - rst_n: {direction: input}
+  
+  # Enable signal
+  - ena: {direction: input}
+
+# Keep pinout for documentation if needed, but the ports section above is what matters
 pinout:
   ui[0]: { name: start, dir: input }
   ui[1]: { name: ui1, dir: input }
@@ -46,11 +67,6 @@ pinout:
   uio[5]: { name: uio5, dir: inout }
   uio[6]: { name: uio6, dir: inout }
   uio[7]: { name: uio7, dir: inout }
-
-# Add power pins to pinout
-power_pins:
-  vccd1: { name: vccd1, dir: input, desc: "Primary power" }
-  vssd1: { name: vssd1, dir: input, desc: "Primary ground" }
 
 power:
   vccd: 3.3
