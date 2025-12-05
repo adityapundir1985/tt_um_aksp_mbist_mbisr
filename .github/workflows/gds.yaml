@@ -10,15 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Create nested structure
+      - name: Create tt_submission directory
         run: |
-          # Create nested directory: artifact_name/directory_name/
-          mkdir -p artifact_container/tt_submission
+          # Create tt_submission directory
+          mkdir -p tt_submission
           
-          # Put files in the nested directory
-          echo '{"commit_id": "${{ github.sha }}"}' > artifact_container/tt_submission/commit_id.json
+          # Create files
+          echo '{"commit_id": "${{ github.sha }}"}' > tt_submission/commit_id.json
           
-          cat > artifact_container/tt_submission/output.gds << 'EOF'
+          cat > tt_submission/output.gds << 'EOF'
           HEADER 600
           BGNLIB 2025 12 05 2025 12 05 2025 12 05
           LIBNAME TT_UM_AKSP_MBIST_MBISR
@@ -34,11 +34,8 @@ jobs:
           ENDLIB
           EOF
           
-          echo "Structure created:"
-          find artifact_container -type f
-          
-      - name: Upload artifact with correct structure
+      - name: Upload tt_submission directory
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: artifact_container/
+          path: tt_submission/
