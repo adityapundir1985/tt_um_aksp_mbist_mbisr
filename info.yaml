@@ -1,107 +1,58 @@
 yaml_version: 6
 
 project:
-  title: "MBIST with MBISR"
-  author: "Dr. Aditya Kumar Singh Pundir"
-  description: "Memory Built-In Self-Test (March C-) with Built-In Self-Repair."
+  title: "AKSP MBIST + MBISR"
+  author: "Aditya Kumar Singh Pundir"
+  email: "aditya.pundir@gmail.com"
+  description: "MBIST (March C-) + MBISR (CAM repair) design for TinyTapeout IHP 26a."
   language: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
-  clock_hz: 10000000
-  tiles: "1x1"
-  source_files:
-    - src/tt_um_aksp_mbist_mbisr.v
-    - src/top.v
-    - src/mbist_marchc_controller.v
-    - src/mbisr_controller.v
-    - src/memory.v
+
+source_files:
+  - src/tt_um_aksp_mbist_mbisr.v
+  - src/top.v
+  - src/mbist_marchc_controller.v
+  - src/mbisr_controller.v
+  - src/memory.v
+
+clock:
+  period: 10
+
+# REQUIRED FOR TT-IHP
+tiles:
+  - x: 0
+    y: 0
 
 pinout:
-  pins:
-    - name: "ui[0]"
-      direction: "input"
-      description: "Start test pulse"
-    - name: "ui[1]"
-      direction: "input"
-      description: "Reserved"
-    - name: "ui[2]"
-      direction: "input"
-      description: "Reserved"
-    - name: "ui[3]"
-      direction: "input"
-      description: "Reserved"
-    - name: "ui[4]"
-      direction: "input"
-      description: "Reserved"
-    - name: "ui[5]"
-      direction: "input"
-      description: "Reserved"
-    - name: "ui[6]"
-      direction: "input"
-      description: "Reserved"
-    - name: "ui[7]"
-      direction: "input"
-      description: "Reserved"
-    
-    - name: "uo[0]"
-      direction: "output"
-      description: "Test complete"
-    - name: "uo[1]"
-      direction: "output"
-      description: "Test failure"
-    - name: "uo[2]"
-      direction: "output"
-      description: "Reserved"
-    - name: "uo[3]"
-      direction: "output"
-      description: "Reserved"
-    - name: "uo[4]"
-      direction: "output"
-      description: "Reserved"
-    - name: "uo[5]"
-      direction: "output"
-      description: "Reserved"
-    - name: "uo[6]"
-      direction: "output"
-      description: "Reserved"
-    - name: "uo[7]"
-      direction: "output"
-      description: "Reserved"
-    
-    - name: "uio[0]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[1]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[2]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[3]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[4]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[5]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[6]"
-      direction: "inout"
-      description: "Unused"
-    - name: "uio[7]"
-      direction: "inout"
-      description: "Unused"
+  ui:
+    0: { name: ui_in_0,  direction: input }
+    1: { name: ui_in_1,  direction: input }
+    2: { name: ui_in_2,  direction: input }
+    3: { name: ui_in_3,  direction: input }
+    4: { name: ui_in_4,  direction: input }
+    5: { name: ui_in_5,  direction: input }
+    6: { name: ui_in_6,  direction: input }
+    7: { name: ui_in_7,  direction: input }
+
+  uo:
+    0: { name: uo_out_0, direction: output }
+    1: { name: uo_out_1, direction: output }
+    2: { name: uo_out_2, direction: output }
+    3: { name: uo_out_3, direction: output }
+    4: { name: uo_out_4, direction: output }
+    5: { name: uo_out_5, direction: output }
+    6: { name: uo_out_6, direction: output }
+    7: { name: uo_out_7, direction: output }
+
+  uio:
+    0: { name: uio_0, direction: input }
+    1: { name: uio_1, direction: input }
+    2: { name: uio_2, direction: input }
+    3: { name: uio_3, direction: input }
+    4: { name: uio_4, direction: input }
+    5: { name: uio_5, direction: input }
+    6: { name: uio_6, direction: input }
+    7: { name: uio_7, direction: input }
 
 documentation:
-  readme: "README.md"
-  datasheet: "docs/spec.md"
-
-metadata:
-  repository: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
-  version: "1.0"
-  license: "Apache-2.0"
-
-maintainer:
-  name: "Dr. Aditya Kumar Singh Pundir"
-  github: "adityapundir1985"
-  email: "aditya.pundir@gmail.com"
+  homepage: "https://github.com/adityapundir1985/tt_um_aksp_mbist_mbisr"
