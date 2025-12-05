@@ -1,44 +1,106 @@
+# info.yaml for TinyTapeout IHP 26a
+yaml_version: 2
+
 project:
   title: "MBIST/MBISR"
   author: "Your Name"
   description: "Memory Built-In Self Test / Memory Built-In Self Repair"
+  documentation: "README.md"
+  
+  # Required for IHP 26a
+  tiles: 1
+  language: "systemverilog"  # or "verilog"
+  clock_hz: 10000000  # 10 MHz clock frequency
 
 digital:
   source: "verilog"
   top_module: "tt_um_aksp_mbist_mbisr"
-  language: "systemverilog"
 
-clock:
-  pin: ui0
-  frequency: 10000000
+analog: {}
 
+# Pinout must follow this exact format
 pinout:
   ui:
-    - [ui0, "Clock", "IN"]
-    - [ui1, "Reset", "IN"]
-    - [ui2, "Test Enable", "IN"]
-    - [ui3, "BIST Start", "IN"]
-    - [ui4, "Input 4", "IN"]
-    - [ui5, "Input 5", "IN"]
-    - [ui6, "Input 6", "IN"]
-    - [ui7, "Input 7", "IN"]
+    - name: ui0
+      desc: "Clock input"
+      dir: "IN"
+    - name: ui1
+      desc: "Reset (active high)"
+      dir: "IN"
+    - name: ui2
+      desc: "Test enable"
+      dir: "IN"
+    - name: ui3
+      desc: "Scan enable"
+      dir: "IN"
+    - name: ui4
+      desc: "BIST start"
+      dir: "IN"
+    - name: ui5
+      desc: "Spare input 1"
+      dir: "IN"
+    - name: ui6
+      desc: "Spare input 2"
+      dir: "IN"
+    - name: ui7
+      desc: "Spare input 3"
+      dir: "IN"
   
   uo:
-    - [uo0, "BIST Done", "OUT"]
-    - [uo1, "Pass/Fail", "OUT"]
-    - [uo2, "Error", "OUT"]
-    - [uo3, "Repair Complete", "OUT"]
-    - [uo4, "Status 0", "OUT"]
-    - [uo5, "Status 1", "OUT"]
-    - [uo6, "Status 2", "OUT"]
-    - [uo7, "Status 3", "OUT"]
+    - name: uo0
+      desc: "BIST done"
+      dir: "OUT"
+    - name: uo1
+      desc: "BIST pass/fail"
+      dir: "OUT"
+    - name: uo2
+      desc: "Error detected"
+      dir: "OUT"
+    - name: uo3
+      desc: "Repair complete"
+      dir: "OUT"
+    - name: uo4
+      desc: "Test status 0"
+      dir: "OUT"
+    - name: uo5
+      desc: "Test status 1"
+      dir: "OUT"
+    - name: uo6
+      desc: "Test status 2"
+      dir: "OUT"
+    - name: uo7
+      desc: "Test status 3"
+      dir: "OUT"
   
   uio:
-    - [uio0, "Bidirectional 0", "BIDIR"]
-    - [uio1, "Bidirectional 1", "BIDIR"]
-    - [uio2, "Bidirectional 2", "BIDIR"]
-    - [uio3, "Bidirectional 3", "BIDIR"]
-    - [uio4, "Bidirectional 4", "BIDIR"]
-    - [uio5, "Bidirectional 5", "BIDIR"]
-    - [uio6, "Bidirectional 6", "BIDIR"]
-    - [uio7, "Bidirectional 7", "BIDIR"]
+    - name: uio0
+      desc: "Bidirectional test 0"
+      dir: "BIDIR"
+    - name: uio1
+      desc: "Bidirectional test 1"
+      dir: "BIDIR"
+    - name: uio2
+      desc: "Bidirectional test 2"
+      dir: "BIDIR"
+    - name: uio3
+      desc: "Bidirectional test 3"
+      dir: "BIDIR"
+    - name: uio4
+      desc: "Bidirectional test 4"
+      dir: "BIDIR"
+    - name: uio5
+      desc: "Bidirectional test 5"
+      dir: "BIDIR"
+    - name: uio6
+      desc: "Bidirectional test 6"
+      dir: "BIDIR"
+    - name: uio7
+      desc: "Bidirectional test 7"
+      dir: "BIDIR"
+
+# Optional sections
+reset:
+  active_high: true
+
+power:
+  voltage: 3.3
