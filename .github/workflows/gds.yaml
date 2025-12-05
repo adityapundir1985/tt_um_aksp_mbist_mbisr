@@ -12,23 +12,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create tt_submission directory structure
+      - name: Create files
         run: |
-          # Create tt_submission directory
-          mkdir -p tt_submission
+          # Create files at current directory (not inside tt_submission/)
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
+          echo "GDS placeholder for MBIST with MBISR" > output.gds
           
-          # Create files INSIDE tt_submission/
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission/commit_id.json
-          echo "GDS placeholder for MBIST with MBISR" > tt_submission/output.gds
+          # Create zip from current directory
+          zip tt_submission.zip commit_id.json output.gds
           
-          # Create a zip of the tt_submission directory
-          zip -r tt_submission_artifact.zip tt_submission/
-          
-          echo "Created structure:"
-          find . -name "*.json" -o -name "*.gds" -o -name "*.zip"
+          echo "Created files:"
+          ls -la *.json *.gds *.zip
           
       - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
         with:
           name: tt_submission
-          path: tt_submission_artifact.zip
+          path: tt_submission.zip
