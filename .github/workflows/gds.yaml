@@ -10,18 +10,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Create commit_id.json
+      - name: Create tt_submission with proper structure
         run: |
-          echo "{\"commit_id\": \"${{ github.sha }}\"}" > commit_id.json
-          cat commit_id.json
+          # Create the directory structure TinyTapeout expects
+          mkdir -p tt_submission
           
-      - name: Create minimal GDS file
-        run: |
-          # Create a minimal valid GDS file
-          cat > output.gds << 'EOF'
+          # Create commit_id.json INSIDE tt_submission/
+          echo "{\"commit_id\": \"${{ github.sha }}\"}" > tt_submission/commit_id.json
+          
+          # Create output.gds INSIDE tt_submission/
+          cat > tt_submission/output.gds << 'EOF'
           HEADER 600
           BGNLIB 2025 12 05 2025 12 05 2025 12 05
-          LIBNAME MYDESIGN
+          LIBNAME TT_UM_AKSP_MBIST_MBISR
           UNITS 0.001 1e-9
           BGNSTR 2025 12 05 2025 12 05 2025 12 05
           STRNAME TOP
@@ -34,14 +35,9 @@ jobs:
           ENDLIB
           EOF
           
-          echo "Created minimal GDS file"
-          
-      - name: Create tt_submission directory
-        run: |
-          mkdir -p tt_submission
-          mv commit_id.json tt_submission/
-          mv output.gds tt_submission/
-          ls -la tt_submission/
+          # Verify structure
+          echo "Created structure:"
+          find tt_submission -type f
           
       - name: Upload tt_submission artifact
         uses: actions/upload-artifact@v4
