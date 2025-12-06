@@ -1,0 +1,166 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Sat Dec 06 05:31:12 2025
+[*]
+[dumpfile] "C:\Users\admin\Downloads\tt_um_aksp_mbist_mbisr_tinytemplate\test\tb.vcd"
+[dumpfile_mtime] "Sat Dec 06 05:29:10 2025"
+[dumpfile_size] 142394
+[savefile] "C:\Users\admin\Downloads\tt_um_aksp_mbist_mbisr_tinytemplate\test\tb.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-21.618904 3510000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[sst_width] 197
+[signals_width] 198
+[sst_expanded] 1
+[sst_vpaned_height] 153
+@28
+tb.dut._unused_clk
+tb.dut._unused_ena
+tb.dut._unused_rst_n
+@22
+tb.dut._unused_ui_in[7:0]
+tb.dut._unused_uio_in[7:0]
+@28
+tb.dut.clk
+tb.dut.done
+tb.dut.ena
+tb.dut.fail
+tb.dut.rst
+tb.dut.rst_n
+tb.dut.start
+@420
+tb.dut.u_top.ADDR_WIDTH
+tb.dut.u_top.DATA_WIDTH
+tb.dut.u_top.MAX_REPAIRS
+tb.dut.u_top.MEM_SIZE
+tb.dut.u_top.SPARE_BASE
+@28
+tb.dut.u_top.bist_done
+tb.dut.u_top.bist_fail
+@22
+tb.dut.u_top.bist_fail_addr[7:0]
+@28
+tb.dut.u_top.bist_fail_valid
+@22
+tb.dut.u_top.bist_mem_addr[7:0]
+tb.dut.u_top.bist_mem_rdata[7:0]
+tb.dut.u_top.bist_mem_wdata[7:0]
+@28
+tb.dut.u_top.bist_mem_we
+tb.dut.u_top.clk
+tb.dut.u_top.done
+tb.dut.u_top.dummy_busy
+@22
+tb.dut.u_top.dummy_user_rdata[7:0]
+@28
+tb.dut.u_top.fail
+@22
+tb.dut.u_top.mbisr_mem_addr[7:0]
+@28
+tb.dut.u_top.mbisr_mem_en
+@22
+tb.dut.u_top.mbisr_mem_rdata[7:0]
+tb.dut.u_top.mbisr_mem_wdata[7:0]
+@28
+tb.dut.u_top.mbisr_mem_we
+tb.dut.u_top.rst
+tb.dut.u_top.start
+@420
+tb.dut.u_top.u_mbisr.ADDR_WIDTH
+tb.dut.u_top.u_mbisr.DATA_WIDTH
+tb.dut.u_top.u_mbisr.MAX_REPAIRS
+tb.dut.u_top.u_mbisr.SPARE_BASE
+@22
+tb.dut.u_top.u_mbisr.bist_fail_addr[7:0]
+@28
+tb.dut.u_top.u_mbisr.bist_fail_valid
+tb.dut.u_top.u_mbisr.clk
+@420
+tb.dut.u_top.u_mbisr.i
+@28
+tb.dut.u_top.u_mbisr.inserted
+@420
+tb.dut.u_top.u_mbisr.j
+tb.dut.u_top.u_mbisr.k
+@22
+tb.dut.u_top.u_mbisr.mem_addr[7:0]
+@28
+tb.dut.u_top.u_mbisr.mem_en
+@22
+tb.dut.u_top.u_mbisr.mem_rdata[7:0]
+tb.dut.u_top.u_mbisr.mem_wdata[7:0]
+@28
+tb.dut.u_top.u_mbisr.mem_we
+@22
+tb.dut.u_top.u_mbisr.remap_addr[7:0]
+@28
+tb.dut.u_top.u_mbisr.rst
+@22
+tb.dut.u_top.u_mbisr.user_addr[7:0]
+@28
+tb.dut.u_top.u_mbisr.user_en
+@22
+tb.dut.u_top.u_mbisr.user_rdata[7:0]
+tb.dut.u_top.u_mbisr.user_wdata[7:0]
+@28
+tb.dut.u_top.u_mbisr.user_we
+@420
+tb.dut.u_top.u_mbist.ADDR_WIDTH
+tb.dut.u_top.u_mbist.DATA_WIDTH
+tb.dut.u_top.u_mbist.MAX_ADDR
+tb.dut.u_top.u_mbist.STATE_DONE
+tb.dut.u_top.u_mbist.STATE_IDLE
+tb.dut.u_top.u_mbist.STATE_R0W1_ASC
+tb.dut.u_top.u_mbist.STATE_R0_ASC
+tb.dut.u_top.u_mbist.STATE_R1W0_DESC
+tb.dut.u_top.u_mbist.STATE_WR0_ASC
+@22
+tb.dut.u_top.u_mbist.addr[7:0]
+@28
+tb.dut.u_top.u_mbist.busy
+tb.dut.u_top.u_mbist.clk
+tb.dut.u_top.u_mbist.done
+tb.dut.u_top.u_mbist.fail
+@22
+tb.dut.u_top.u_mbist.fail_addr[7:0]
+@28
+tb.dut.u_top.u_mbist.fail_valid
+@22
+tb.dut.u_top.u_mbist.mem_addr[7:0]
+tb.dut.u_top.u_mbist.mem_rdata[7:0]
+tb.dut.u_top.u_mbist.mem_wdata[7:0]
+@28
+tb.dut.u_top.u_mbist.mem_we
+tb.dut.u_top.u_mbist.rst
+tb.dut.u_top.u_mbist.start
+tb.dut.u_top.u_mbist.state[2:0]
+@420
+tb.dut.u_top.u_memory.ADDR_WIDTH
+tb.dut.u_top.u_memory.COMPARE_WIDTH
+tb.dut.u_top.u_memory.DATA_WIDTH
+tb.dut.u_top.u_memory.MEM_SIZE
+@28
+tb.dut.u_top.u_memory.clk
+@420
+tb.dut.u_top.u_memory.i
+@22
+tb.dut.u_top.u_memory.mem_addr[7:0]
+tb.dut.u_top.u_memory.mem_addr_ext[8:0]
+@28
+tb.dut.u_top.u_memory.mem_en
+@22
+tb.dut.u_top.u_memory.mem_rdata[7:0]
+tb.dut.u_top.u_memory.mem_wdata[7:0]
+@28
+tb.dut.u_top.u_memory.mem_we
+tb.dut.u_top.u_memory.rst
+@22
+tb.dut.ui_in[7:0]
+tb.dut.uio_in[7:0]
+tb.dut.uio_oe[7:0]
+tb.dut.uio_out[7:0]
+tb.dut.uo_out[7:0]
+[pattern_trace] 1
+[pattern_trace] 0
