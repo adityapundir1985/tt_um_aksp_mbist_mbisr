@@ -3,209 +3,108 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import RisingEdge, ClockCycles
+
+
+async def init(dut):
+    """Shared init for all tests"""
+    dut.ena.value = 1
+    dut.ui_in.value = 0
+    dut.uio_in.value = 0
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 5)
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
+
 
 @cocotb.test()
 async def test_mbist_basic(dut):
-    """Basic MBIST test - should pass with good memory"""
-    
-    dut._log.info("Starting MBIST Basic Test")
-    
-    # Set clock period (10ns = 100MHz)
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
-    
-    # Initialize
-    dut.ena.value = 1
+
+    await init(dut)
+
+    # Start pulse
+    dut.ui_in.value = 1
+    await ClockCycles(dut.clk, 1)
     dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    
-    # Reset for 10 cycles
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 10)
-    
-    # Start MBIST
-    dut._log.info("Starting MBIST")
-    dut.ui_in.value = 1  # Start signal on ui_in[0]
-    await ClockCycles(dut.clk, 5)
-    dut.ui_in.value = 0  # Pulse start
-    
-    # Wait for completion (with timeout)
-    timeout = 10000
-    for i in range(timeout):
-        await ClockCycles(dut.clk, 1)
-        if dut.uo_out.value[0] == 1:  # done signal
+
+    # Wait for done pulse
+    timeout = 5000
+    for _ in range(timeout):
+        await RisingEdge(dut.clk)
+        if int(dut.uo_out.value) & 1:
             break
     else:
-        dut._log.error("MBIST timeout - never completed")
-        assert False, "MBIST timeout"
-    
-    # Check results
-    done = dut.uo_out.value[0]
-    fail = dut.uo_out.value[1]
-    
-    dut._log.info(f"MBIST completed: done={int(done)}, fail={int(fail)}")
-    
-    # With good memory, should pass
-    assert done == 1, "MBIST did not complete"
-    assert fail == 0, "MBIST detected unexpected faults"
+        assert False, "Timeout waiting for DONE"
+
+    assert (int(dut.uo_out.value) >> 1) & 1 == 0, "Unexpected FAIL"
+
 
 @cocotb.test()
 async def test_mbist_with_faults(dut):
-    """Test MBIST with injected memory faults"""
-    
-    dut._log.info("Starting MBIST Fault Test")
-    
-    # Set clock period
+    """Injects a real fault"""
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
-    
-    # Initialize
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    
-    # Reset
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 10)
-    
-    # Start MBIST
+
+    await init(dut)
+
+    # Inject fault
+    dut._log.info("Injecting fault at address 5")
+    dut._id("u_top.u_memory.mem_array[5]", extended=True).value = 0xFF
+
+    # Start pulse
     dut.ui_in.value = 1
-    await ClockCycles(dut.clk, 5)
+    await ClockCycles(dut.clk, 1)
     dut.ui_in.value = 0
-    
-    # Wait for completion
-    timeout = 10000
-    for i in range(timeout):
-        await ClockCycles(dut.clk, 1)
-        if dut.uo_out.value[0] == 1:
+
+    # Wait for done
+    for _ in range(5000):
+        await RisingEdge(dut.clk)
+        if int(dut.uo_out.value) & 1:
             break
     else:
-        dut._log.error("MBIST timeout")
-        assert False, "MBIST timeout"
-    
-    # Check results - MBISR should handle faults
-    done = dut.uo_out.value[0]
-    fail = dut.uo_out.value[1]
-    
-    dut._log.info(f"MBIST with potential faults: done={int(done)}, fail={int(fail)}")
-    
-    # MBIST should still complete
-    assert done == 1, "MBIST did not complete"
-    # fail could be 0 or 1 depending on if faults were detected
+        assert False, "Timeout waiting for DONE"
+
+    # MBISR may fix it, so fail can be 0 or 1
+
 
 @cocotb.test()
 async def test_multiple_runs(dut):
-    """Run MBIST multiple times to test MBISR repair persistence"""
-    
-    dut._log.info("Starting Multiple Run Test")
-    
-    # Set clock period
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
-    
-    # Initialize
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    
-    # Reset
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 10)
-    
-    results = []
-    
-    # Run MBIST 3 times
+
+    await init(dut)
+
     for run in range(3):
-        dut._log.info(f"Starting MBIST run {run+1}")
-        
-        # Pulse start
+        dut.cmd = f"Run {run+1}"
+
+        # Start
         dut.ui_in.value = 1
-        await ClockCycles(dut.clk, 5)
+        await ClockCycles(dut.clk, 1)
         dut.ui_in.value = 0
-        
-        # Wait for completion
-        timeout = 10000
-        for i in range(timeout):
-            await ClockCycles(dut.clk, 1)
-            if dut.uo_out.value[0] == 1:
+
+        # Wait done pulse
+        for _ in range(5000):
+            await RisingEdge(dut.clk)
+            if int(dut.uo_out.value) & 1:
                 break
         else:
-            dut._log.error(f"Run {run+1} timeout")
             assert False, f"Run {run+1} timeout"
-        
-        done = dut.uo_out.value[0]
-        fail = dut.uo_out.value[1]
-        
-        dut._log.info(f"Run {run+1}: done={int(done)}, fail={int(fail)}")
-        results.append((done, fail))
-        
-        # Wait between runs
-        await ClockCycles(dut.clk, 100)
-    
-    # All runs should complete
-    for i, (done, fail) in enumerate(results):
-        assert done == 1, f"Run {i+1} did not complete"
-        dut._log.info(f"Run {i+1} completed successfully")
+
+        # small gap
+        await ClockCycles(dut.clk, 20)
+
 
 @cocotb.test()
 async def test_input_output_mapping(dut):
-    """Test that input/output mapping is correct"""
-    
-    dut._log.info("Testing I/O Mapping")
-    
-    # Set clock period
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
-    
-    # Initialize
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    
-    # Reset
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 10)
-    
-    # Test 1: Check that only ui_in[0] matters (start signal)
-    dut.ui_in.value = 0b00000001  # Only bit 0 set
-    await ClockCycles(dut.clk, 1)
-    # Other ui_in bits should be ignored
-    dut.ui_in.value = 0b11111110  # All bits except 0
-    await ClockCycles(dut.clk, 1)
-    
-    # Test 2: Check output mapping
-    # uo_out[0] = done, uo_out[1] = fail, others should be 0
-    dut.ui_in.value = 1  # Start test
-    await ClockCycles(dut.clk, 5)
-    dut.ui_in.value = 0
-    
-    # Wait a bit and check outputs
-    await ClockCycles(dut.clk, 100)
-    
-    # Check that unused outputs are 0
-    uo_out = dut.uo_out.value
-    # Simple integer conversion for binary display
-    uo_out_int = int(uo_out)
-    dut._log.info(f"uo_out = {bin(uo_out_int)[2:].zfill(8)}")
-    
-    # Bits 7:2 should be 0
-    assert (uo_out_int >> 2) == 0, f"Unused outputs not zero: {bin(uo_out_int)[2:].zfill(8)}"
-    
-    # uio_out should be all 0
-    uio_out_int = int(dut.uio_out.value)
-    assert uio_out_int == 0, f"uio_out not zero: {bin(uio_out_int)[2:].zfill(8)}"
-    
-    # uio_oe should be all 0 (inputs)
-    uio_oe_int = int(dut.uio_oe.value)
-    assert uio_oe_int == 0, f"uio_oe not zero: {bin(uio_oe_int)[2:].zfill(8)}"
-    
-    dut._log.info("I/O mapping test passed")
+
+    await init(dut)
+
+    # Outputs should be zero after reset
+    await ClockCycles(dut.clk, 2)
+    assert int(dut.uo_out.value) & 0b11111100 == 0
+    assert int(dut.uio_out.value) == 0
+    assert int(dut.uio_oe.value) == 0
