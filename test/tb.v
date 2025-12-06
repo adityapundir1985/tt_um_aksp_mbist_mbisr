@@ -70,7 +70,7 @@ module tb;  // Changed from debug_all to tb
             end
             
             begin
-                #500000;  // 500us timeout (very generous)
+                #100000;  // 500us timeout (very generous)
                 $display("\n❌ TIMEOUT: MBIST stuck!");
                 $display("   State: %0d", mbist_state);
                 $display("   Address: %0d", mbist_addr);
