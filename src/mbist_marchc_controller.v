@@ -1,12 +1,5 @@
-/*
- mbist_marchc_controller.v
- Verilog-2001: March C- variant (simplified) MBIST controller
- Reports per-address failure via fail_valid & fail_addr
-*/
-
-/* verilator lint_off SYNCASYNCNET */
 module mbist_marchc_controller #(
-    parameter ADDR_WIDTH = 8,
+    parameter ADDR_WIDTH = 5,
     parameter DATA_WIDTH = 8
 )(
     input clk,
@@ -19,143 +12,212 @@ module mbist_marchc_controller #(
     output reg [ADDR_WIDTH-1:0] fail_addr,
 
     output reg mem_we,
+    output reg mem_en,           // FIXED: mem_en output properly declared
     output reg [ADDR_WIDTH-1:0] mem_addr,
     output reg [DATA_WIDTH-1:0] mem_wdata,
     input [DATA_WIDTH-1:0] mem_rdata
 );
-/* verilator lint_on SYNCASYNCNET */
     
-    // State definitions
-    localparam STATE_IDLE    = 3'd0;
-    localparam STATE_WR0_ASC = 3'd1;
-    localparam STATE_R0W1_ASC = 3'd2;
-    localparam STATE_R1W0_DESC = 3'd3;
-    localparam STATE_R0_ASC   = 3'd4;
-    localparam STATE_DONE     = 3'd5;
+    // States for March C- algorithm with extra states for final writes
+    localparam STATE_IDLE         = 4'd0;
+    localparam STATE_WR0          = 4'd1;  // Write 0s to all addresses
+    localparam STATE_WR0_FINAL    = 4'd2;  // Extra cycle for last write
+    localparam STATE_R0_W1        = 4'd3;  // Read 0, Write 1 (ascending)
+    localparam STATE_R0_W1_FINAL  = 4'd4;  // Extra cycle for last write
+    localparam STATE_R1_W0        = 4'd5;  // Read 1, Write 0 (descending)
+    localparam STATE_R1_W0_FINAL  = 4'd6;  // Extra cycle for last write
+    localparam STATE_R0F          = 4'd7;  // Final read 0 (ascending)
+    localparam STATE_DONE         = 4'd8;
     
-    reg [2:0] state;
+    reg [3:0] state;
     reg [ADDR_WIDTH-1:0] addr;
+    reg read_phase;
+    reg [ADDR_WIDTH-1:0] read_addr;
     
-    // Maximum address value
     localparam MAX_ADDR = {(ADDR_WIDTH){1'b1}};
     
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             state <= STATE_IDLE;
-            addr <= {ADDR_WIDTH{1'b0}};
-            busy <= 1'b0;
-            done <= 1'b0;
-            fail <= 1'b0;
-            fail_valid <= 1'b0;
-            mem_we <= 1'b0;
-            mem_addr <= {ADDR_WIDTH{1'b0}};
-            mem_wdata <= {DATA_WIDTH{1'b0}};
+            addr <= 0;
+            busy <= 0;
+            done <= 0;
+            fail <= 0;
+            fail_valid <= 0;
+            mem_we <= 0;
+            mem_en <= 0;           // FIXED: Initialize mem_en
+            mem_addr <= 0;
+            mem_wdata <= 0;
+            read_phase <= 0;
+            read_addr <= 0;
         end else begin
-            fail_valid <= 1'b0;  // Pulse for one cycle
+            fail_valid <= 0;
+            mem_en <= 1;           // FIXED: Keep mem_en enabled during operation
             
             case (state)
                 STATE_IDLE: begin
-                    done <= 1'b0;
-                    busy <= 1'b0;
+                    done <= 0;
+                    busy <= 0;
+                    mem_en <= 0;   // FIXED: Disable mem_en in idle
                     if (start) begin
-                        busy <= 1'b1;
-                        addr <= {ADDR_WIDTH{1'b0}};
-                        state <= STATE_WR0_ASC;
-                        fail <= 1'b0;
+                        state <= STATE_WR0;
+                        addr <= 0;
+                        busy <= 1;
+                        mem_en <= 1;  // FIXED: Enable mem_en when starting
+                        mem_we <= 1;
+                        mem_wdata <= 0;
                     end
                 end
                 
-                STATE_WR0_ASC: begin
-                    // Write 0 ascending
-                    mem_we <= 1'b1;
+                STATE_WR0: begin
+                    mem_we <= 1;
                     mem_addr <= addr;
-                    mem_wdata <= {DATA_WIDTH{1'b0}};
+                    mem_wdata <= 0;
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
                     
                     if (addr == MAX_ADDR) begin
-                        addr <= MAX_ADDR;
-                        state <= STATE_R0W1_ASC;
+                        state <= STATE_WR0_FINAL;
                     end else begin
                         addr <= addr + 1;
                     end
                 end
                 
-                STATE_R0W1_ASC: begin
-                    // Read 0, then write 1 ascending
-                    mem_we <= 1'b0;
-                    mem_addr <= addr;
+                STATE_WR0_FINAL: begin
+                    // One more cycle to ensure write to address 31 completes
+                    mem_we <= 1;
+                    mem_addr <= MAX_ADDR;
+                    mem_wdata <= 0;
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
                     
-                    // Check for failure
-                    if (mem_rdata !== {DATA_WIDTH{1'b0}}) begin
-                        fail <= 1'b1;
-                        fail_valid <= 1'b1;
-                        fail_addr <= addr;
+                    addr <= 0;
+                    state <= STATE_R0_W1;
+                    mem_we <= 0;
+                    read_phase <= 0;
+                    read_addr <= 0;
+                end
+                
+                STATE_R0_W1: begin
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
+                    if (read_phase == 0) begin
+                        // Setup read
+                        mem_we <= 0;
+                        mem_addr <= addr;
+                        read_addr <= addr;
+                        read_phase <= 1;
+                    end else begin
+                        // Check read result
+                        if (mem_rdata !== 0) begin
+                            fail <= 1;
+                            fail_valid <= 1;
+                            fail_addr <= read_addr;
+                        end
+                        
+                        // Write 1 to current address
+                        mem_we <= 1;
+                        mem_addr <= addr;
+                        mem_wdata <= {DATA_WIDTH{1'b1}};
+                        read_phase <= 0;
+                        
+                        if (addr == MAX_ADDR) begin
+                            state <= STATE_R0_W1_FINAL;
+                        end else begin
+                            addr <= addr + 1;
+                        end
                     end
-                    
-                    // Write 1 at same address
-                    mem_we <= 1'b1;
-                    mem_addr <= addr;
+                end
+                
+                STATE_R0_W1_FINAL: begin
+                    // One more cycle to ensure write to address 31 completes
+                    mem_we <= 1;
+                    mem_addr <= MAX_ADDR;
                     mem_wdata <= {DATA_WIDTH{1'b1}};
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
                     
-                    if (addr == {ADDR_WIDTH{1'b0}}) begin
-                        addr <= {ADDR_WIDTH{1'b0}};
-                        state <= STATE_R1W0_DESC;
+                    addr <= MAX_ADDR;
+                    state <= STATE_R1_W0;
+                    mem_we <= 0;
+                    read_phase <= 0;
+                    read_addr <= MAX_ADDR;
+                end
+                
+                STATE_R1_W0: begin
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
+                    if (read_phase == 0) begin
+                        // Setup read
+                        mem_we <= 0;
+                        mem_addr <= addr;
+                        read_addr <= addr;
+                        read_phase <= 1;
                     end else begin
-                        addr <= addr - 1;
+                        // Check read result
+                        if (mem_rdata !== {DATA_WIDTH{1'b1}}) begin
+                            fail <= 1;
+                            fail_valid <= 1;
+                            fail_addr <= read_addr;
+                        end
+                        
+                        // Write 0 to current address
+                        mem_we <= 1;
+                        mem_addr <= addr;
+                        mem_wdata <= 0;
+                        read_phase <= 0;
+                        
+                        if (addr == 0) begin
+                            state <= STATE_R1_W0_FINAL;
+                        end else begin
+                            addr <= addr - 1;
+                        end
                     end
                 end
                 
-                STATE_R1W0_DESC: begin
-                    // Read 1, then write 0 descending
-                    mem_we <= 1'b0;
-                    mem_addr <= addr;
+                STATE_R1_W0_FINAL: begin
+                    // One more cycle to ensure write to address 0 completes
+                    mem_we <= 1;
+                    mem_addr <= 0;
+                    mem_wdata <= 0;
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
                     
-                    // Check for failure
-                    if (mem_rdata !== {DATA_WIDTH{1'b1}}) begin
-                        fail <= 1'b1;
-                        fail_valid <= 1'b1;
-                        fail_addr <= addr;
-                    end
-                    
-                    // Write 0
-                    mem_we <= 1'b1;
-                    mem_addr <= addr;
-                    mem_wdata <= {DATA_WIDTH{1'b0}};
-                    
-                    if (addr == {ADDR_WIDTH{1'b0}}) begin
-                        addr <= {ADDR_WIDTH{1'b0}};
-                        state <= STATE_R0_ASC;
-                    end else begin
-                        addr <= addr - 1;
-                    end
+                    addr <= 0;
+                    state <= STATE_R0F;
+                    mem_we <= 0;
+                    read_phase <= 0;
+                    read_addr <= 0;
                 end
                 
-                STATE_R0_ASC: begin
-                    // Final read 0 ascending verification
-                    mem_we <= 1'b0;
-                    mem_addr <= addr;
-                    
-                    // Check for failure
-                    if (mem_rdata !== {DATA_WIDTH{1'b0}}) begin
-                        fail <= 1'b1;
-                        fail_valid <= 1'b1;
-                        fail_addr <= addr;
-                    end
-                    
-                    if (addr == MAX_ADDR) begin
-                        state <= STATE_DONE;
+                STATE_R0F: begin
+                    mem_en <= 1;   // FIXED: Ensure mem_en is active
+                    if (read_phase == 0) begin
+                        // Setup read
+                        mem_we <= 0;
+                        mem_addr <= addr;
+                        read_addr <= addr;
+                        read_phase <= 1;
                     end else begin
-                        addr <= addr + 1;
+                        // Check final read
+                        if (mem_rdata !== 0) begin
+                            fail <= 1;
+                            fail_valid <= 1;
+                            fail_addr <= read_addr;
+                        end
+                        read_phase <= 0;
+                        
+                        if (addr == MAX_ADDR) begin
+                            state <= STATE_DONE;
+                            mem_en <= 0;  // FIXED: Disable mem_en when done
+                        end else begin
+                            addr <= addr + 1;
+                        end
                     end
                 end
                 
                 STATE_DONE: begin
-                    done <= 1'b1;
-                    busy <= 1'b0;
-                    state <= STATE_IDLE;
-                end
-                
-                default: begin
-                    state <= STATE_IDLE;
+                    done <= 1;
+                    busy <= 0;
+                    mem_en <= 0;   // FIXED: Ensure mem_en is disabled
+                    
+                    if (!start) begin
+                        state <= STATE_IDLE;
+                    end
                 end
             endcase
         end

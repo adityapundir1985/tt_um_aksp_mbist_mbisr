@@ -1,85 +1,82 @@
-`default_nettype none
-`timescale 1ns / 1ps
+`timescale 1ns/1ps
 
-module tb ();
-
-  // Dump the signals to a FST file
-  initial begin
-     // FST format (efficient)
-    $dumpfile("tb.fst");
-    $dumpvars(0, tb);
+module tb;  // Changed from debug_all to tb
+    reg clk = 0;
+    reg rst = 1;
+    reg start = 0;
+    wire [7:0] uo_out;
     
-    // VCD format (compatible)
-    //$dumpfile("tb.vcd");
-    //$dumpvars(0, tb);
-    #1;
-  end
-
-  // Test signals
-  reg clk;
-  reg rst_n;
-  reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
-  wire [7:0] uo_out;
-  wire [7:0] uio_out;
-  wire [7:0] uio_oe;
-
-  // Clock generation
-  always #5 clk = ~clk;
-
-  // DUT instantiation
-  tt_um_aksp_mbist_mbisr dut (
-      .ui_in  (ui_in),
-      .uo_out (uo_out),
-      .uio_in (uio_in),
-      .uio_out(uio_out),
-      .uio_oe (uio_oe),
-      .ena    (ena),
-      .clk    (clk),
-      .rst_n  (rst_n)
-  );
-
-  // Your test sequence here (from tt_um_aksp_mbist_mbisr_tb.v)
-  initial begin
-    // Initialize
-    clk = 0;
-    rst_n = 0;
-    ena = 1;
-    ui_in = 8'h00;
-    uio_in = 8'h00;
+    tt_um_aksp_mbist_mbisr dut (
+        .ui_in({7'b0, start}),
+        .uo_out(uo_out),
+        .uio_in(8'b0),
+        .ena(1'b1),
+        .clk(clk),
+        .rst_n(~rst)
+    );
     
-    // Release reset
-    #100 rst_n = 1;
+    always #5 clk = ~clk;
     
-    // Wait
-    #1000;
+    wire done = uo_out[0];
+    wire fail = uo_out[1];
+    wire [2:0] mbist_state = dut.u_top.u_mbist.state;
+    wire [4:0] mbist_addr = dut.u_top.u_mbist.addr;
     
-    // Start MBIST
-    $display("[%0t] Starting MBIST...", $time);
-    ui_in[0] = 1'b1;
-    #100 ui_in[0] = 1'b0;
+    integer cycle = 0;
     
-    // Monitor with timeout
-    fork
-      begin
-        wait (uo_out[0] === 1'b1);
-        $display("[%0t] MBIST completed", $time);
-        if (uo_out[1] === 1'b1) begin
-          $display("[%0t] FAIL: Memory faults", $time);
-        end else begin
-          $display("[%0t] PASS: Memory OK", $time);
+    always @(posedge clk) begin
+        cycle <= cycle + 1;
+        if (cycle < 200) begin
+            $display("[CYCLE %0d] state=%0d, addr=%0d, done=%b, fail=%b, rdata=%h",
+                     cycle, mbist_state, mbist_addr, done, fail, dut.u_top.u_mbist.mem_rdata);
         end
-        #100;
-        $finish;
-      end
-      
-      begin
-        #5000000;
-        $display("[%0t] TIMEOUT: done=%b, fail=%b", $time, uo_out[0], uo_out[1]);
-        $finish;
-      end
-    join
-  end
-
+    end
+    
+    initial begin
+        // FST format (more efficient)
+        $dumpfile("tb.fst");
+        $dumpvars(0, tb);
+        
+        // VCD format (compatible)
+        // $dumpfile("tb.vcd");
+        // $dumpvars(0, tb);  // Now matches module name
+        
+        $display("=== STARTING DEBUG TEST ===");
+        
+        // Release reset with proper timing
+        #100 rst = 0;
+        #200;
+        
+        $display("\n=== Starting MBIST ===");
+        start = 1;
+        @(posedge clk);
+        start = 0;
+        
+        // Wait for completion with timeout
+        fork
+            begin
+                wait (done == 1'b1);
+                $display("\n✅ SUCCESS: MBIST completed!");
+                $display("   Fail flag: %b", fail);
+                if (fail) begin
+                    $display("   Failure address: %0d", dut.u_top.u_mbist.fail_addr);
+                    // Show memory at failure address
+                    $display("   Memory[%0d] = %h", 
+                            dut.u_top.u_mbist.fail_addr,
+                            dut.u_top.u_memory.mem_array[dut.u_top.u_mbist.fail_addr]);
+                end
+                #100;
+                $finish;
+            end
+            
+            begin
+                #500000;  // 500us timeout (very generous)
+                $display("\n❌ TIMEOUT: MBIST stuck!");
+                $display("   State: %0d", mbist_state);
+                $display("   Address: %0d", mbist_addr);
+                $display("   Done: %b, Fail: %b", done, fail);
+                $finish;
+            end
+        join
+    end
 endmodule

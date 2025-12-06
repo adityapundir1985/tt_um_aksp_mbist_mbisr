@@ -1,4 +1,4 @@
-# Makefile for MBIST/MBISR Project
+# Makefile
 # See https://docs.cocotb.org/en/stable/quickstart.html for more info
 
 # defaults

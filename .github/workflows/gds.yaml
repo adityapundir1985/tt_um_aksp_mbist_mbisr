@@ -18,8 +18,6 @@ jobs:
         with:
           pdk: ihp-sg13g2
           librelane-version: 3.0.0.dev44
-          # Your top module name - MUST match your info.yaml
-          top_module: tt_um_aksp_mbist_mbisr
 
   precheck:
     needs: gds
@@ -39,9 +37,6 @@ jobs:
 
       - name: GL test
         uses: TinyTapeout/tt-gds-action/gl_test@ttihp26a
-        with:
-          # Optional: specify test duration or other parameters
-          test_timeout: 300
 
   viewer:
     needs: gds
@@ -50,19 +45,4 @@ jobs:
       pages: write # to deploy to Pages
       id-token: write # to verify the deployment originates from an appropriate source
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Generate GDS viewer
-        uses: TinyTapeout/tt-gds-action/viewer@ttihp26a
-        with:
-          # Output directory for the viewer
-          output_dir: ./viewer-output
-          
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./viewer-output
+      - uses: TinyTapeout/tt-gds-action/viewer@ttihp26a

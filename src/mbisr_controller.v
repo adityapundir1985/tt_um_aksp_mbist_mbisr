@@ -3,10 +3,10 @@
  Remaps user_addr -> spare region when match detected.
 */
 module mbisr_controller #(
-    parameter ADDR_WIDTH = 8,
+    parameter ADDR_WIDTH = 5,
     parameter DATA_WIDTH = 8,
-    parameter MAX_REPAIRS = 16,
-    parameter SPARE_BASE = 8'hF0
+    parameter MAX_REPAIRS = 2,
+    parameter SPARE_BASE = 5'h1E
 )(
     input clk,
     input rst,

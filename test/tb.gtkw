@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
-[*] Sat Dec 06 05:31:12 2025
+[*] Sat Dec 06 08:45:35 2025
 [*]
 [dumpfile] "C:\Users\admin\Downloads\tt_um_aksp_mbist_mbisr_tinytemplate\test\tb.vcd"
-[dumpfile_mtime] "Sat Dec 06 05:29:10 2025"
-[dumpfile_size] 142394
+[dumpfile_mtime] "Sat Dec 06 08:45:11 2025"
+[dumpfile_size] 32219
 [savefile] "C:\Users\admin\Downloads\tt_um_aksp_mbist_mbisr_tinytemplate\test\tb.gtkw"
 [timestart] 0
 [size] 1000 600
 [pos] -1 -1
-*-21.618904 3510000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.889212 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [sst_width] 197
 [signals_width] 198
@@ -40,11 +40,14 @@ tb.dut.u_top.SPARE_BASE
 tb.dut.u_top.bist_done
 tb.dut.u_top.bist_fail
 @22
-tb.dut.u_top.bist_fail_addr[7:0]
+tb.dut.u_top.bist_fail_addr[4:0]
 @28
 tb.dut.u_top.bist_fail_valid
 @22
-tb.dut.u_top.bist_mem_addr[7:0]
+tb.dut.u_top.bist_mem_addr[4:0]
+@28
+tb.dut.u_top.bist_mem_en
+@22
 tb.dut.u_top.bist_mem_rdata[7:0]
 tb.dut.u_top.bist_mem_wdata[7:0]
 @28
@@ -57,7 +60,7 @@ tb.dut.u_top.dummy_user_rdata[7:0]
 @28
 tb.dut.u_top.fail
 @22
-tb.dut.u_top.mbisr_mem_addr[7:0]
+tb.dut.u_top.mbisr_mem_addr[4:0]
 @28
 tb.dut.u_top.mbisr_mem_en
 @22
@@ -73,7 +76,7 @@ tb.dut.u_top.u_mbisr.DATA_WIDTH
 tb.dut.u_top.u_mbisr.MAX_REPAIRS
 tb.dut.u_top.u_mbisr.SPARE_BASE
 @22
-tb.dut.u_top.u_mbisr.bist_fail_addr[7:0]
+tb.dut.u_top.u_mbisr.bist_fail_addr[4:0]
 @28
 tb.dut.u_top.u_mbisr.bist_fail_valid
 tb.dut.u_top.u_mbisr.clk
@@ -85,7 +88,7 @@ tb.dut.u_top.u_mbisr.inserted
 tb.dut.u_top.u_mbisr.j
 tb.dut.u_top.u_mbisr.k
 @22
-tb.dut.u_top.u_mbisr.mem_addr[7:0]
+tb.dut.u_top.u_mbisr.mem_addr[4:0]
 @28
 tb.dut.u_top.u_mbisr.mem_en
 @22
@@ -94,11 +97,11 @@ tb.dut.u_top.u_mbisr.mem_wdata[7:0]
 @28
 tb.dut.u_top.u_mbisr.mem_we
 @22
-tb.dut.u_top.u_mbisr.remap_addr[7:0]
+tb.dut.u_top.u_mbisr.remap_addr[4:0]
 @28
 tb.dut.u_top.u_mbisr.rst
 @22
-tb.dut.u_top.u_mbisr.user_addr[7:0]
+tb.dut.u_top.u_mbisr.user_addr[4:0]
 @28
 tb.dut.u_top.u_mbisr.user_en
 @22
@@ -112,33 +115,43 @@ tb.dut.u_top.u_mbist.DATA_WIDTH
 tb.dut.u_top.u_mbist.MAX_ADDR
 tb.dut.u_top.u_mbist.STATE_DONE
 tb.dut.u_top.u_mbist.STATE_IDLE
-tb.dut.u_top.u_mbist.STATE_R0W1_ASC
-tb.dut.u_top.u_mbist.STATE_R0_ASC
-tb.dut.u_top.u_mbist.STATE_R1W0_DESC
-tb.dut.u_top.u_mbist.STATE_WR0_ASC
+tb.dut.u_top.u_mbist.STATE_R0F
+tb.dut.u_top.u_mbist.STATE_R0_W1
+tb.dut.u_top.u_mbist.STATE_R0_W1_FINAL
+tb.dut.u_top.u_mbist.STATE_R1_W0
+tb.dut.u_top.u_mbist.STATE_R1_W0_FINAL
+tb.dut.u_top.u_mbist.STATE_WR0
+tb.dut.u_top.u_mbist.STATE_WR0_FINAL
 @22
-tb.dut.u_top.u_mbist.addr[7:0]
+tb.dut.u_top.u_mbist.addr[4:0]
 @28
 tb.dut.u_top.u_mbist.busy
 tb.dut.u_top.u_mbist.clk
 tb.dut.u_top.u_mbist.done
 tb.dut.u_top.u_mbist.fail
 @22
-tb.dut.u_top.u_mbist.fail_addr[7:0]
+tb.dut.u_top.u_mbist.fail_addr[4:0]
 @28
 tb.dut.u_top.u_mbist.fail_valid
 @22
-tb.dut.u_top.u_mbist.mem_addr[7:0]
+tb.dut.u_top.u_mbist.mem_addr[4:0]
+@28
+tb.dut.u_top.u_mbist.mem_en
+@22
 tb.dut.u_top.u_mbist.mem_rdata[7:0]
 tb.dut.u_top.u_mbist.mem_wdata[7:0]
 @28
 tb.dut.u_top.u_mbist.mem_we
+@22
+tb.dut.u_top.u_mbist.read_addr[4:0]
+@28
+tb.dut.u_top.u_mbist.read_phase
 tb.dut.u_top.u_mbist.rst
 tb.dut.u_top.u_mbist.start
-tb.dut.u_top.u_mbist.state[2:0]
+@22
+tb.dut.u_top.u_mbist.state[3:0]
 @420
 tb.dut.u_top.u_memory.ADDR_WIDTH
-tb.dut.u_top.u_memory.COMPARE_WIDTH
 tb.dut.u_top.u_memory.DATA_WIDTH
 tb.dut.u_top.u_memory.MEM_SIZE
 @28
@@ -146,8 +159,7 @@ tb.dut.u_top.u_memory.clk
 @420
 tb.dut.u_top.u_memory.i
 @22
-tb.dut.u_top.u_memory.mem_addr[7:0]
-tb.dut.u_top.u_memory.mem_addr_ext[8:0]
+tb.dut.u_top.u_memory.mem_addr[4:0]
 @28
 tb.dut.u_top.u_memory.mem_en
 @22
