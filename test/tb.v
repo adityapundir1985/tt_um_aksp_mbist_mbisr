@@ -47,7 +47,7 @@ module tb;
     
     initial begin
         // FST format (more efficient)
-        $dumpfile("tb.vcd");
+        $dumpfile("tb.fst");
         $dumpvars(0, tb);
         
         $display("=== STARTING MBIST/MBISR TEST ===");
