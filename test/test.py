@@ -4,7 +4,6 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
-from cocotb.binary import BinaryValue
 
 @cocotb.test()
 async def test_mbist_basic(dut):
@@ -12,7 +11,7 @@ async def test_mbist_basic(dut):
     
     dut._log.info("Starting MBIST Basic Test")
     
-    # Set clock period (10ns = 100MHz) - FIXED: 'unit' not 'units'
+    # Set clock period (10ns = 100MHz)
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
     
@@ -34,7 +33,7 @@ async def test_mbist_basic(dut):
     dut.ui_in.value = 0  # Pulse start
     
     # Wait for completion (with timeout)
-    timeout = 10000  # Increased timeout
+    timeout = 10000
     for i in range(timeout):
         await ClockCycles(dut.clk, 1)
         if dut.uo_out.value[0] == 1:  # done signal
@@ -59,7 +58,7 @@ async def test_mbist_with_faults(dut):
     
     dut._log.info("Starting MBIST Fault Test")
     
-    # Set clock period - FIXED: 'unit' not 'units'
+    # Set clock period
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
     
@@ -105,7 +104,7 @@ async def test_multiple_runs(dut):
     
     dut._log.info("Starting Multiple Run Test")
     
-    # Set clock period - FIXED: 'unit' not 'units'
+    # Set clock period
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
     
@@ -161,7 +160,7 @@ async def test_input_output_mapping(dut):
     
     dut._log.info("Testing I/O Mapping")
     
-    # Set clock period - FIXED: 'unit' not 'units'
+    # Set clock period
     clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
     
@@ -194,19 +193,19 @@ async def test_input_output_mapping(dut):
     
     # Check that unused outputs are 0
     uo_out = dut.uo_out.value
-    # FIXED: Use integer conversion for formatting
-    uo_out_int = uo_out.integer if hasattr(uo_out, 'integer') else int(uo_out)
-    dut._log.info(f"uo_out = {uo_out_int:08b}")
+    # Simple integer conversion for binary display
+    uo_out_int = int(uo_out)
+    dut._log.info(f"uo_out = {bin(uo_out_int)[2:].zfill(8)}")
     
     # Bits 7:2 should be 0
-    assert (uo_out_int >> 2) == 0, f"Unused outputs not zero: {uo_out_int:08b}"
+    assert (uo_out_int >> 2) == 0, f"Unused outputs not zero: {bin(uo_out_int)[2:].zfill(8)}"
     
     # uio_out should be all 0
-    uio_out_int = dut.uio_out.value.integer if hasattr(dut.uio_out.value, 'integer') else int(dut.uio_out.value)
-    assert uio_out_int == 0, f"uio_out not zero: {uio_out_int:08b}"
+    uio_out_int = int(dut.uio_out.value)
+    assert uio_out_int == 0, f"uio_out not zero: {bin(uio_out_int)[2:].zfill(8)}"
     
     # uio_oe should be all 0 (inputs)
-    uio_oe_int = dut.uio_oe.value.integer if hasattr(dut.uio_oe.value, 'integer') else int(dut.uio_oe.value)
-    assert uio_oe_int == 0, f"uio_oe not zero: {uio_oe_int:08b}"
+    uio_oe_int = int(dut.uio_oe.value)
+    assert uio_oe_int == 0, f"uio_oe not zero: {bin(uio_oe_int)[2:].zfill(8)}"
     
     dut._log.info("I/O mapping test passed")
