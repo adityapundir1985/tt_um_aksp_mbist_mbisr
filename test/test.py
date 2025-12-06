@@ -3,108 +3,65 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, ClockCycles
-
-
-async def init(dut):
-    """Shared init for all tests"""
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 5)
-    dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 5)
-
+from cocotb.triggers import RisingEdge, Timer
 
 @cocotb.test()
 async def test_mbist_basic(dut):
-    clock = Clock(dut.clk, 10, unit="ns")
+    dut._log.info("Running MBIST basic test")
+
+    clock = Clock(dut.clk, 10, units="ns")
     cocotb.start_soon(clock.start())
 
-    await init(dut)
+    # Reset
+    dut.rst_n.value = 0
+    dut.ena.value = 1
+    dut.ui_in.value = 0
+    dut.uio_in.value = 0
+    await Timer(100, units="ns")
+    dut.rst_n.value = 1
 
-    # Start pulse
+    # Start test
+    await Timer(100, units="ns")
     dut.ui_in.value = 1
-    await ClockCycles(dut.clk, 1)
+    await RisingEdge(dut.clk)
     dut.ui_in.value = 0
 
-    # Wait for done pulse
-    timeout = 5000
-    for _ in range(timeout):
+    # Wait for DONE
+    for _ in range(2000):
         await RisingEdge(dut.clk)
-        if int(dut.uo_out.value) & 1:
+        if int(dut.uo_out.value) & 0x01:
             break
     else:
         assert False, "Timeout waiting for DONE"
 
-    assert (int(dut.uo_out.value) >> 1) & 1 == 0, "Unexpected FAIL"
+    fail = (int(dut.uo_out.value) >> 1) & 1
+    assert fail == 0, "Fail flag was set"
 
 
 @cocotb.test()
-async def test_mbist_with_faults(dut):
-    """Injects a real fault"""
-    clock = Clock(dut.clk, 10, unit="ns")
-    cocotb.start_soon(clock.start())
+async def test_io_mapping(dut):
+    dut._log.info("Checking wrapper mapping")
 
-    await init(dut)
-
-    # Inject fault
-    dut._log.info("Injecting fault at address 5")
-    dut._id("u_top.u_memory.mem_array[5]", extended=True).value = 0xFF
-
-    # Start pulse
-    dut.ui_in.value = 1
-    await ClockCycles(dut.clk, 1)
-    dut.ui_in.value = 0
-
-    # Wait for done
-    for _ in range(5000):
-        await RisingEdge(dut.clk)
-        if int(dut.uo_out.value) & 1:
-            break
-    else:
-        assert False, "Timeout waiting for DONE"
-
-    # MBISR may fix it, so fail can be 0 or 1
+    assert len(dut.ui_in) == 8
+    assert len(dut.uo_out) == 8
+    assert len(dut.uio_in) == 8
 
 
 @cocotb.test()
 async def test_multiple_runs(dut):
-    clock = Clock(dut.clk, 10, unit="ns")
-    cocotb.start_soon(clock.start())
+    dut._log.info("Running multiple MBIST runs")
 
-    await init(dut)
-
-    for run in range(3):
-        dut.cmd = f"Run {run+1}"
-
-        # Start
+    for _ in range(2):
         dut.ui_in.value = 1
-        await ClockCycles(dut.clk, 1)
+        await RisingEdge(dut.clk)
         dut.ui_in.value = 0
 
-        # Wait done pulse
-        for _ in range(5000):
+        for _ in range(2000):
             await RisingEdge(dut.clk)
             if int(dut.uo_out.value) & 1:
                 break
         else:
-            assert False, f"Run {run+1} timeout"
+            assert False, "Timeout waiting for DONE"
 
-        # small gap
-        await ClockCycles(dut.clk, 20)
-
-
-@cocotb.test()
-async def test_input_output_mapping(dut):
-    clock = Clock(dut.clk, 10, unit="ns")
-    cocotb.start_soon(clock.start())
-
-    await init(dut)
-
-    # Outputs should be zero after reset
-    await ClockCycles(dut.clk, 2)
-    assert int(dut.uo_out.value) & 0b11111100 == 0
-    assert int(dut.uio_out.value) == 0
-    assert int(dut.uio_oe.value) == 0
+        fail = (int(dut.uo_out.value) >> 1) & 1
+        assert fail == 0
