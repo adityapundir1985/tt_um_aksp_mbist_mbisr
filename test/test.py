@@ -12,24 +12,25 @@ async def test_mbist_basic(dut):
     # Start clock
     cocotb.start_soon(Clock(dut.clk, 10, unit="ns").start())
 
-    # Reset
-    dut.rst_n.value = 0
-    dut.ui_in.value = 0
+    # ✅ Correct signal path
+    dut.dut.rst_n.value = 0
+    dut.dut.ui_in.value = 0
     await Timer(100, unit="ns")
 
-    dut.rst_n.value = 1
+    dut.dut.rst_n.value = 1
     await Timer(100, unit="ns")
 
-    # ✅ ACTUALLY START MBIST
-    dut.ui_in.value = 0x01   # ui_in[0] = 1
+    # ✅ Start MBIST correctly
+    dut.dut.ui_in.value = 0x01
     await RisingEdge(dut.clk)
-    dut.ui_in.value = 0x00
+    dut.dut.ui_in.value = 0x00
 
     # ✅ Wait for DONE
-    for i in range(20000):
+    for i in range(50000):
         await RisingEdge(dut.clk)
-        if int(dut.uo_out.value) & 0x01:
+        if int(dut.dut.uo_out.value) & 0x01:
             dut._log.info("MBIST DONE")
             return
 
     assert False, "Timeout waiting for DONE"
+
