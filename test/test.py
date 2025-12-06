@@ -12,8 +12,8 @@ async def test_mbist_basic(dut):
     
     dut._log.info("Starting MBIST Basic Test")
     
-    # Set clock period (10ns = 100MHz)
-    clock = Clock(dut.clk, 10, units="ns")
+    # Set clock period (100ns = 10MHz) - CONSISTENT
+    clock = Clock(dut.clk, 100, units="ns")
     cocotb.start_soon(clock.start())
     
     # Initialize
@@ -59,8 +59,8 @@ async def test_mbist_with_faults(dut):
     
     dut._log.info("Starting MBIST Fault Test")
     
-    # Set clock period
-    clock = Clock(dut.clk, 10, units="ns")
+    # Set clock period (100ns = 10MHz) - CONSISTENT
+    clock = Clock(dut.clk, 100, units="ns")
     cocotb.start_soon(clock.start())
     
     # Initialize
@@ -108,8 +108,8 @@ async def test_multiple_runs(dut):
     
     dut._log.info("Starting Multiple Run Test")
     
-    # Set clock period
-    clock = Clock(dut.clk, 10, units="ns")
+    # Set clock period (100ns = 10MHz) - CONSISTENT
+    clock = Clock(dut.clk, 100, units="ns")
     cocotb.start_soon(clock.start())
     
     # Initialize
@@ -164,7 +164,8 @@ async def test_input_output_mapping(dut):
     
     dut._log.info("Testing I/O Mapping")
     
-    clock = Clock(dut.clk, 10, units="ns")
+    # Set clock period (100ns = 10MHz) - CONSISTENT
+    clock = Clock(dut.clk, 100, units="ns")
     cocotb.start_soon(clock.start())
     
     # Initialize
