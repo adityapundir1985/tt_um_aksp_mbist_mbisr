@@ -27,7 +27,7 @@ async def test_mbist_basic(dut):
     dut.ui_in.value = 0
 
     # Wait for DONE
-    for _ in range(2000):
+    for _ in range(1000):
         await RisingEdge(dut.clk)
         if int(dut.uo_out.value) & 0x01:
             break
