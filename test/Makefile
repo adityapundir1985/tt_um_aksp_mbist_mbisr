@@ -1,62 +1,45 @@
-# Makefile for MBIST+MBISR simulation
-# Run from project root directory
+# Makefile for MBIST/MBISR Project
+# See https://docs.cocotb.org/en/stable/quickstart.html for more info
 
-# Tools
-IVERILOG := iverilog
-VVP := vvp
+# defaults
+SIM ?= icarus
+FST ?= -fst # Use more efficient FST format
+TOPLEVEL_LANG ?= verilog
 
-# Directories
-SRC_DIR := src
-TEST_DIR := .
+# Source directory and files
+SRC_DIR = $(PWD)/../src
+PROJECT_SOURCES = mbist_marchc_controller.v memory.v top.v mbisr_controller.v tt_um_aksp_mbist_mbisr.v
 
-# Source files
-SRC_FILES := $(SRC_DIR)/tt_um_aksp_mbist_mbisr.v \
-             $(SRC_DIR)/top.v \
-             $(SRC_DIR)/mbist_marchc_controller.v \
-             $(SRC_DIR)/mbisr_controller.v \
-             $(SRC_DIR)/memory.v
+ifneq ($(GATES),yes)
 
-TEST_FILE := $(TEST_DIR)/tt_um_aksp_mbist_mbisr_tb.v
+# RTL simulation:
+SIM_BUILD				= sim_build/rtl
+VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(PROJECT_SOURCES))
 
-# Output files
-SIM_OUT := sim.out
-WAVE_OUT := wave.vcd
+else
 
-# Default target
-all: compile run
+# Gate level simulation:
+SIM_BUILD				= sim_build/gl
+COMPILE_ARGS    += -DGL_TEST
+COMPILE_ARGS    += -DFUNCTIONAL
+COMPILE_ARGS    += -DSIM
+VERILOG_SOURCES += $(PDK_ROOT)/ihp-sg13g2/libs.ref/sg13g2_io/verilog/sg13g2_io.v
+VERILOG_SOURCES += $(PDK_ROOT)/ihp-sg13g2/libs.ref/sg13g2_stdcell/verilog/sg13g2_stdcell.v
 
-# Compile the design
-compile:
-	@echo "Compiling Verilog files..."
-	$(IVERILOG) -o $(SIM_OUT) -I$(SRC_DIR) $(SRC_FILES) $(TEST_FILE)
-	@echo "Compilation complete."
+# this gets copied in by the GDS action workflow
+VERILOG_SOURCES += $(PWD)/gate_level_netlist.v
 
-# Run simulation
-run:
-	@echo "Running simulation..."
-	$(VVP) $(SIM_OUT)
-	@echo "Simulation complete."
+endif
 
-# Generate waveform
-wave: compile
-	@echo "Running simulation with waveform generation..."
-	$(VVP) $(SIM_OUT) +dump
-	@echo "Waveform generated: $(WAVE_OUT)"
+# Allow sharing configuration between design and testbench via `include`:
+COMPILE_ARGS 		+= -I$(SRC_DIR)
 
-# Clean generated files
-clean:
-	@echo "Cleaning generated files..."
-	rm -f $(SIM_OUT) $(WAVE_OUT)
-	@echo "Clean complete."
+# Include the testbench sources:
+VERILOG_SOURCES += $(PWD)/tb.v
+TOPLEVEL = tb
 
-# Help target
-help:
-	@echo "Available targets:"
-	@echo "  make all     - Compile and run simulation (default)"
-	@echo "  make compile - Compile Verilog files only"
-	@echo "  make run     - Run simulation (requires compiled files)"
-	@echo "  make wave    - Compile and run with waveform generation"
-	@echo "  make clean   - Remove generated files"
-	@echo "  make help    - Show this help message"
+# List test modules to run, separated by commas and without the .py suffix:
+COCOTB_TEST_MODULES = test
 
-.PHONY: all compile run wave clean help
+# include cocotb's make rules to take care of the simulator setup
+include $(shell cocotb-config --makefiles)/Makefile.sim
