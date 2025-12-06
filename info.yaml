@@ -1,53 +1,60 @@
-yaml_version: 6
-
+# Tiny Tapeout project information
 project:
-  name: "tt_um_aksp_mbist_mbisr"
-  author: "Aditya Kumar Singh Pundir"
-  email: "aditya.pundir@gmail.com"
-  title: "MBIST + MBISR Built-In Memory Test & Repair"
-  description: "Memory Built-In Self-Test (March C-) and Built-In Self-Repair with CAM-based faulty address remapping."
-  language: "verilog"
-  top_module: "tt_um_aksp_mbist_mbisr"
-  documentation: "README.md"
-  tiles: "1x1"
-  clock_hz: 10000000  # 10 MHz 
-  
-  # source_files MUST be inside project section
+  title:        "MBIST + MBISR Built-In Memory Test & Repair"      # Project title
+  author:       "Dr Aditya Kumar Singh Pundir, Dr Pallavi Singh"      # Your name
+  discord:      "dradityapundir"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
+  description:  "Memory Built-In Self-Test (March C-) and Built-In Self-Repair with CAM-based faulty address remapping."      # One line description of what your project does
+  language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
+  clock_hz:     10000000       # Clock frequency in Hz (or 0 if not applicable)
+
+  # How many tiles your design occupies? A single tile is about 167x108 uM.
+  tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
+
+  # Your top module name must start with "tt_um_". Make it unique by including your github username:
+  top_module:  "tt_um_aksp_mbist_mbisr"
+
+  # List your project's source files here.
+  # Source files must be in ./src and you must list each source file separately, one per line.
+  # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - tt_um_aksp_mbist_mbisr.v
-    - top.v
-    - mbist_marchc_controller.v
-    - mbisr_controller.v
-    - memory.v
+    - "tt_um_aksp_mbist_mbisr.v"
+	- "top.v"
+	- "mbist_marchc_controller.v"
+	- "mbisr_controller.v"
+	- "memory.v"
 
+# The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
+# This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
-  ui[0]: { name: start, dir: input }
-  ui[1]: { name: ui1, dir: input }
-  ui[2]: { name: ui2, dir: input }
-  ui[3]: { name: ui3, dir: input }
-  ui[4]: { name: ui4, dir: input }
-  ui[5]: { name: ui5, dir: input }
-  ui[6]: { name: ui6, dir: input }
-  ui[7]: { name: ui7, dir: input }
+  # Inputs
+  ui[0]: "START"          # MBIST start signal (active high)
+  ui[1]: ""               # Unused
+  ui[2]: ""               # Unused
+  ui[3]: ""               # Unused
+  ui[4]: ""               # Unused
+  ui[5]: ""               # Unused
+  ui[6]: ""               # Unused
+  ui[7]: ""               # Unused
 
-  uo[0]: { name: done, dir: output }
-  uo[1]: { name: fail, dir: output }
-  uo[2]: { name: uo2, dir: output }
-  uo[3]: { name: uo3, dir: output }
-  uo[4]: { name: uo4, dir: output }
-  uo[5]: { name: uo5, dir: output }
-  uo[6]: { name: uo6, dir: output }
-  uo[7]: { name: uo7, dir: output }
+  # Outputs
+  uo[0]: "DONE"           # MBIST completion status (active high)
+  uo[1]: "FAIL"           # MBIST failure status (active high if fault detected)
+  uo[2]: ""               # Unused
+  uo[3]: ""               # Unused
+  uo[4]: ""               # Unused
+  uo[5]: ""               # Unused
+  uo[6]: ""               # Unused
+  uo[7]: ""               # Unused
 
-  uio[0]: { name: uio0, dir: inout }
-  uio[1]: { name: uio1, dir: inout }
-  uio[2]: { name: uio2, dir: inout }
-  uio[3]: { name: uio3, dir: inout }
-  uio[4]: { name: uio4, dir: inout }
-  uio[5]: { name: uio5, dir: inout }
-  uio[6]: { name: uio6, dir: inout }
-  uio[7]: { name: uio7, dir: inout }
+  # Bidirectional pins
+  uio[0]: ""              # Unused (configured as input)
+  uio[1]: ""              # Unused (configured as input)
+  uio[2]: ""              # Unused (configured as input)
+  uio[3]: ""              # Unused (configured as input)
+  uio[4]: ""              # Unused (configured as input)
+  uio[5]: ""              # Unused (configured as input)
+  uio[6]: ""              # Unused (configured as input)
+  uio[7]: ""              # Unused (configured as input)
 
-power:
-  vccd: 3.3
-  vssd: 0
+# Do not change!
+yaml_version: 6
