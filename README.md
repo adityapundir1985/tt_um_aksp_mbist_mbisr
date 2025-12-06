@@ -1,11 +1,14 @@
 # tt_um_aksp_mbist_mbisr
+
 Memory Built-In Self-Test (MBIST) with Built-In Self-Repair (MBISR) for TinyTapeout
 
 ## Overview
-This project implements a complete Memory Built-In Self-Test (MBIST) system with integrated Memory Built-In Self-Repair (MBISR).  
+
+This project implements a complete Memory Built-In Self-Test (MBIST) system with integrated Memory Built-In Self-Repair (MBISR).
 The MBIST uses the March C- algorithm to detect memory faults, and MBISR automatically remaps faulty addresses into a spare memory region.
 
 ## Features
+
 - March C- algorithm memory testing
 - Automatic repair of up to 2 faulty addresses
 - 32-byte memory (5-bit address, 8-bit data)
@@ -14,147 +17,133 @@ The MBIST uses the March C- algorithm to detect memory faults, and MBISR automat
 - CAM-based faulty address remapping
 
 ## Specifications
-- **Memory Size**: 32 bytes (256 bits)
-- **Address Width**: 5 bits (0-31)
-- **Data Width**: 8 bits
-- **Max Repairs**: 2 faulty addresses
-- **Spare Region**: Addresses 30-31 (0x1E-0x1F)
-- **Clock Frequency**: 50 MHz (20ns period)
-- **Test Algorithm**: March C-
+
+Memory Size: 32 bytes (256 bits)  
+Address Width: 5 bits (0–31)  
+Data Width: 8 bits  
+Max Repairs: 2 faulty addresses  
+Spare Region: 0x1E–0x1F  
+Clock Frequency: 50 MHz (20 ns period)  
+Test Algorithm: March C-
 
 ## Pin Mapping
-| TinyTapeout Pin | Internal Signal | Description |
-|-----------------|-----------------|-------------|
-| clk             | clk             | 50MHz system clock |
-| rst_n           | rst             | Active-low reset |
-| ena             | ena             | Enable (always active) |
-| ui_in[0]        | start           | MBIST start pulse (active high) |
-| uo_out[0]       | done            | Test completion indicator |
-| uo_out[1]       | fail            | Fault detection indicator |
-| uio[7:0]        | -               | Unused (configured as inputs) |
+
+TinyTapeout Pin | Internal Signal | Description  
+clk | clk | 50 MHz system clock  
+rst_n | rst | Active-low reset  
+ena | ena | Enable (always active)  
+ui_in[0] | start | MBIST start pulse (active high)  
+uo_out[0] | done | Test completion indicator  
+uo_out[1] | fail | Fault detection indicator  
+uio[7:0] | - | Unused (configured as inputs)
 
 ## Operation Sequence
-1. Apply active-low reset (pulse rst_n low)
-2. Pulse ui_in[0] high for 1+ clock cycles to start test
-3. Hardware executes March C- algorithm automatically
-4. Monitor uo_out[0] - goes high when test completes
-5. Check uo_out[1] - low indicates pass, high indicates fault(s) detected
+
+1. Apply active-low reset (pulse rst_n low).
+2. Pulse ui_in[0] high for at least 1 clock cycle to start the test.
+3. Hardware executes the March C- algorithm automatically.
+4. Monitor uo_out[0] – goes high when test completes.
+5. Check uo_out[1] – low indicates pass, high indicates fault(s) detected.
 
 ## March C- Algorithm Steps
+
 1. Write 0 to all addresses (ascending)
 2. Read 0, write 1 (ascending)
 3. Read 1, write 0 (descending)
 4. Read 0 (ascending)
 
 ## Repair Mechanism (MBISR)
+
 - CAM-style fault address table
-- Spare memory region: addresses 30-31 (0x1E-0x1F)
+- Spare memory region: addresses 30–31 (0x1E–0x1F)
 - Automatic remapping of faulty addresses
 - Supports up to 2 simultaneous repairs
 - Persistent repair across test cycles
 
 ## File Structure
-tt_um_aksp_mbist_mbisr/
-├── src/
-│ ├── tt_um_aksp_mbist_mbisr.v # TinyTapeout wrapper
-│ ├── top.v # Main integration module
-│ ├── mbist_marchc_controller.v # MBIST controller (March C-)
-│ ├── mbisr_controller.v # MBISR repair controller
-│ └── memory.v # 32×8 synchronous memory
-├── test/
-│ ├── tb.v # Testbench
-│ ├── test.py # Python cocotb tests
-│ └── Makefile # Simulation makefile
-├── .github/workflows/ # CI/CD workflows
-├── info.yaml # Project metadata
-├── config.json # PDK configuration
-└── README.md # This file
 
-text
+tt_um_aksp_mbist_mbisr/
+src/
+  tt_um_aksp_mbist_mbisr.v
+  top.v
+  mbist_marchc_controller.v
+  mbisr_controller.v
+  memory.v
+test/
+  tb.v
+  test.py
+  Makefile
+.github/workflows/
+info.yaml
+config.json
+README.md
 
 ## Simulation
-### Local Simulation:
-```bash
-cd test
-make clean
+
+Local Simulation:
+
+cd test  
+make clean  
 make
+
 Manual Simulation:
-bash
-iverilog -o sim.out -I../src ../src/*.v tb.v
-vvp sim.out
-gtkwave tb.fst  # or tb.vcd
-CI/CD
-Test Workflow: Runs on every push, executes cocotb tests
 
-GDS Workflow: Generates layout, runs gate-level simulation
+iverilog -o sim.out -I../src ../src/*.v tb.v  
+vvp sim.out  
+gtkwave tb.fst
 
-Docs Workflow: Builds documentation
+## CI/CD
 
-FPGA Workflow: Generates FPGA bitstream (manual trigger)
+- Test Workflow: Runs on every push
+- GDS Workflow: Generates layout and gate-level simulation
+- Docs Workflow: Builds documentation
+- FPGA Workflow: Generates FPGA bitstream (manual trigger)
 
-Design Details
+## Design Details
+
 MBIST Controller:
-Implements March C- algorithm
-
-Reports failing addresses with fail_valid signal
-
-Provides done/fail status outputs
-
-Handles read/write timing with 2-cycle operations
+- Implements March C- algorithm
+- Provides done/fail status outputs
 
 MBISR Controller:
-Content-Addressable Memory (CAM) style address table
-
-Dynamic address remapping to spare region
-
-Supports 2 simultaneous repairs
-
-Persistent fault tracking across resets
+- CAM-style address remapping
+- Supports 2 simultaneous repairs
 
 Memory Module:
-32×8 synchronous RAM
+- 32×8 synchronous RAM
+- Reset initializes memory to zero
 
-Reset initializes all locations to zero
+## License
 
-Single clock cycle read/write operations
+Apache License 2.0
 
-License
-Apache License 2.0 - see LICENSE file for details.
+## Authors
 
-Authors
-Dr Aditya Kumar Singh Pundir
+Dr. Aditya Kumar Singh Pundir  
 LinkedIn: https://www.linkedin.com/in/dradityapundir/
 
-Dr Pallavi Singh
+Dr. Pallavi Singh  
 LinkedIn: https://www.linkedin.com/in/dr-pallavi-singh-554a8826a/
 
-Acknowledgments
-TinyTapeout team for the open-source silicon platform
+## References
 
-IHP Microelectronics for the SG13G2 PDK
+[1] A. K. S. Pundir, P. Singh, and R. Kumar, “Modelling, Simulation, and FPGA Implementation of an Augmented Memory Built-In Self-Test Based Design for Bit-Oriented Memory,” Journal of Electronic Testing, 2025, doi:10.1007/s10836-025-06193-3.
 
-Open-source EDA tool developers
+[2] V. Mathur, K. Singh, and A. S. Pundir, “IoT based memory fault diagnosis and repairing using PSO,” Facta Universitatis, 2025, doi:10.2298/FUEE2502209M.
 
-References
-Academic Publications by the Authors
-Pundir, A.K.S., Singh, P., Kumar, R. et al.,"Modelling, Simulation, and FPGA Implementation of an Augmented Memory Built-in Self-Test Based Design for Bit-Oriented Memory.", Journal of Electronic Testing, 2025. DOI: https://doi.org/10.1007/s10836-025-06193-3
+[3] V. Mathur, A. K. Pundir, R. K. Gupta, and S. K. Singh, “Recrudesce: IoT-Based Embedded Memories Algorithms and Self-Healing Mechanism,” 2025, doi:10.1007/978-981-99-5180-2_10.
 
-Mathur, V., Singh, K., Pundir, A.S.
-"IoT based memory fault diagnosis and repairing using PSO.", Facta Universitatis, 2025., DOI: https://doi.org/10.2298/FUEE2502209M
+[4] V. Mathur, A. K. Pundir, S. Singh, and S. K. Singh, “Algorithms and Self Repair Mechanism for Embedded Memories Testing,” 2025, doi:10.1007/978-981-99-4795-9_48.
 
-Mathur, V., Pundir, A.K., Gupta, R.K., Singh, S.K., "Recrudesce: IoT-Based Embedded Memories Algorithms and Self-healing Mechanism.", DOI: https://doi.org/10.1007/978-981-99-5180-2_10
+[5] A. K. Singh Pundir, “Modified Memory Built-In Self-Repair (MMBISR) for SRAM,” IET Circuits, Devices & Systems, 2019, doi:10.1049/iet-cds.2018.5218.
 
-Mathur, V., Pundir, A.K., Singh, S., Singh, S.K., "Algorithms and Self Repair Mechanism for Embedded Memories Testing.", DOI: https://doi.org/10.1007/978-981-99-4795-9_48
+[6] TinyTapeout Documentation: https://tinytapeout.com  
+[7] March Test (Wikipedia): https://en.wikipedia.org/wiki/March_test  
+[8] Memory BIST Basics (EDN): https://www.edn.com/memory-bist-basics/  
+[9] Verilog HDL Quick Reference: https://www.sutherland-hdl.com/papers/1996-CUG-presentation_Verilog-Quick-Reference.pdf  
+[10] Icarus Verilog: http://iverilog.icarus.com
 
-Singh Pundir, A.K., "Modified Memory Built In Self Repair (MMBISR) for SRAM.", IET Circuits, Devices & Systems, 2019., DOI: https://doi.org/10.1049/iet-cds.2018.5218
+---
 
-Technical References
-TinyTapeout Documentation: https://tinytapeout.com
-
-March Test Algorithms (Wikipedia): https://en.wikipedia.org/wiki/March_test
-
-Memory BIST Fundamentals: https://www.edn.com/memory-bist-basics/
-
-Verilog HDL Quick Reference: https://www.sutherland-hdl.com/papers/1996-CUG-presentation_Verilog-Quick-Reference.pdf
-
-Icarus Verilog: http://iverilog.icarus.com
+Version: 1.0  
+Compatible with: TinyTapeout ttihp-verilog-template
