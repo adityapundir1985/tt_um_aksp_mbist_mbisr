@@ -1,18 +1,16 @@
 `timescale 1ns/1ps
 
 module tb;
-    // Test signals
     reg clk = 0;
-    reg rst_n = 0;          // Active low reset
+    reg rst_n = 0;
     reg ena = 1;
     reg [7:0] ui_in = 0;
     reg [7:0] uio_in = 0;
-    
+
     wire [7:0] uo_out;
     wire [7:0] uio_out;
     wire [7:0] uio_oe;
 
-    // DUT instantiation
     tt_um_aksp_mbist_mbisr dut (
         .ui_in   (ui_in),
         .uo_out  (uo_out),
@@ -24,16 +22,13 @@ module tb;
         .rst_n   (rst_n)
     );
 
-    // Clock generation: 100MHz (10ns period)
-    always #5 clk = ~clk;
+    always #5 clk = ~clk;  // 100 MHz
 
-    // Debug aliases
     wire done = uo_out[0];
     wire fail = uo_out[1];
 
     integer cycle = 0;
 
-    // Debug display
     always @(posedge clk) begin
         cycle <= cycle + 1;
         if (cycle < 500) begin
@@ -43,26 +38,25 @@ module tb;
     end
 
     initial begin
-        // Waveform dump
+        // Dump waveforms
         $dumpfile("tb.fst");
         $dumpvars(0, tb);
 
         $display("=== STARTING MBIST/MBISR TEST ===");
 
-        // Apply reset
+        // Reset
         #100;
-        rst_n = 1;      // Release reset
+        rst_n = 1;
         #200;
 
+        // Start MBIST
         $display("\n=== Starting MBIST ===");
-        ui_in[0] = 1'b1;    // Pulse start
+        ui_in[0] = 1'b1;
         @(posedge clk);
         ui_in[0] = 1'b0;
 
-        // IMPORTANT:
-        // Let cocotb control the end of simulation.
-        // Do NOT call $finish here.
-        #5_000_000;
+        // Let cocotb decide when to finish
+        #10_000_000;
     end
 
 endmodule
