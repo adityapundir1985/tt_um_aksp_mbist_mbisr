@@ -123,10 +123,10 @@ Apache License 2.0 - see LICENSE file for details.
 
 Authors
 Dr Aditya Kumar Singh Pundir
-LinkedIn | GitHub
+LinkedIn: https://www.linkedin.com/in/dradityapundir/
 
 Dr Pallavi Singh
-LinkedIn
+LinkedIn: https://www.linkedin.com/in/dr-pallavi-singh-554a8826a/
 
 Acknowledgments
 TinyTapeout team for the open-source silicon platform
@@ -137,41 +137,24 @@ Open-source EDA tool developers
 
 References
 Academic Publications by the Authors
-Pundir, A.K.S., Singh, P., Kumar, R. et al.
-"Modelling, Simulation, and FPGA Implementation of an Augmented Memory Built-in Self-Test Based Design for Bit-Oriented Memory."
-Journal of Electronic Testing, 2025.
-DOI: https://doi.org/10.1007/s10836-025-06193-3
+Pundir, A.K.S., Singh, P., Kumar, R. et al.,"Modelling, Simulation, and FPGA Implementation of an Augmented Memory Built-in Self-Test Based Design for Bit-Oriented Memory.", Journal of Electronic Testing, 2025. DOI: https://doi.org/10.1007/s10836-025-06193-3
 
 Mathur, V., Singh, K., Pundir, A.S.
-"IoT based memory fault diagnosis and repairing using PSO."
-Facta Universitatis, 2025.
-DOI: https://doi.org/10.2298/FUEE2502209M
+"IoT based memory fault diagnosis and repairing using PSO.", Facta Universitatis, 2025., DOI: https://doi.org/10.2298/FUEE2502209M
 
-Mathur, V., Pundir, A.K., Gupta, R.K., Singh, S.K.
-"Recrudesce: IoT-Based Embedded Memories Algorithms and Self-healing Mechanism."
-DOI: https://doi.org/10.1007/978-981-99-5180-2_10
+Mathur, V., Pundir, A.K., Gupta, R.K., Singh, S.K., "Recrudesce: IoT-Based Embedded Memories Algorithms and Self-healing Mechanism.", DOI: https://doi.org/10.1007/978-981-99-5180-2_10
 
-Mathur, V., Pundir, A.K., Singh, S., Singh, S.K.
-"Algorithms and Self Repair Mechanism for Embedded Memories Testing."
-DOI: https://doi.org/10.1007/978-981-99-4795-9_48
+Mathur, V., Pundir, A.K., Singh, S., Singh, S.K., "Algorithms and Self Repair Mechanism for Embedded Memories Testing.", DOI: https://doi.org/10.1007/978-981-99-4795-9_48
 
-Singh Pundir, A.K.
-"Modified Memory Built In Self Repair (MMBISR) for SRAM."
-IET Circuits, Devices & Systems, 2019.
-DOI: https://doi.org/10.1049/iet-cds.2018.5218
+Singh Pundir, A.K., "Modified Memory Built In Self Repair (MMBISR) for SRAM.", IET Circuits, Devices & Systems, 2019., DOI: https://doi.org/10.1049/iet-cds.2018.5218
 
 Technical References
-TinyTapeout Documentation
-https://tinytapeout.com
+TinyTapeout Documentation: https://tinytapeout.com
 
-March Test Algorithms (Wikipedia)
-https://en.wikipedia.org/wiki/March_test
+March Test Algorithms (Wikipedia): https://en.wikipedia.org/wiki/March_test
 
-Memory BIST Fundamentals
-https://www.edn.com/memory-bist-basics/
+Memory BIST Fundamentals: https://www.edn.com/memory-bist-basics/
 
-Verilog HDL Quick Reference
-https://www.sutherland-hdl.com/papers/1996-CUG-presentation_Verilog-Quick-Reference.pdf
+Verilog HDL Quick Reference: https://www.sutherland-hdl.com/papers/1996-CUG-presentation_Verilog-Quick-Reference.pdf
 
-Icarus Verilog
-http://iverilog.icarus.com
+Icarus Verilog: http://iverilog.icarus.com
