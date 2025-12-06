@@ -2,14 +2,16 @@ name: docs
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
   docs:
     runs-on: ubuntu-24.04
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-      - uses: TinyTapeout/tt-docs-action@ttihp26a
+      - name: Build docs
+        uses: TinyTapeout/tt-gds-action/docs@ttihp26a
